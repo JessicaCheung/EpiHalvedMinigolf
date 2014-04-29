@@ -1,0 +1,30 @@
+﻿Build started 4/28/2014 11:27:34 PM.
+     1>Project "c:\Users\empresswrath\documents\visual studio 2013\Projects\Minigolf\Minigolf\Minigolf.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\OpenGL\glm /IC:\OpenGL\freeglut\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(75): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(86): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(114): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(123): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(176): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(185): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(194): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(286): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(366): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(368): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(445): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(446): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(544): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(546): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(585): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(589): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\visual studio 2013\projects\minigolf\minigolf\main.cpp(599): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\empresswrath\documents\visual studio 2013\Projects\Minigolf\Debug\Minigolf.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\OpenGL\freeglut\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"c:\users\empresswrath\documents\visual studio 2013\Projects\Minigolf\Debug\Minigolf.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\empresswrath\documents\visual studio 2013\Projects\Minigolf\Debug\Minigolf.lib" /MACHINE:X86 Debug\main.obj
+         Minigolf.vcxproj -> c:\users\empresswrath\documents\visual studio 2013\Projects\Minigolf\Debug\Minigolf.exe
+     1>Done Building Project "c:\Users\empresswrath\documents\visual studio 2013\Projects\Minigolf\Minigolf\Minigolf.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.84
