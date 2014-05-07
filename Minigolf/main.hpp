@@ -15,9 +15,11 @@
 #include <math.h>
 using namespace std;
 
+void initRendering(char** argv);
+void setShaders();
+void display();
+void handleKeyboard(unsigned char key, int x, int y);
 void handleResize(int w, int h);
 void handle_menu(int ID);
 void handle_motion(int x, int y);
 void handle_mouse(int b, int s, int x, int y);
-void initRendering(char** argv);
-void display();

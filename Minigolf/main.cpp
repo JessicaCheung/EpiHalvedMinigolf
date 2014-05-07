@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	initRendering(argv);
 
 	glutDisplayFunc(display);
-	//glutKeyboardFunc(handleKey
+	glutKeyboardFunc(handleKeyboard);
 	glutReshapeFunc(handleResize);
 	glutMotionFunc(handle_motion);
 	glutMouseFunc(handle_mouse);
@@ -56,11 +56,14 @@ void initRendering(char** argv)
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
 	ReadMap("hole.01.db");
 	//ReadMap("testcourse3.db");
+	setShaders();
 
+}
+
+void setShaders()
+{
 	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
 	glUseProgram(program);
 
@@ -109,7 +112,6 @@ void initRendering(char** argv)
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
 	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindVertexArray(0);
-
 }
 
 void display()
@@ -121,19 +123,29 @@ void display()
 	glm::vec3 eye(0.0f, 5.0f, 5.0f);
 	glm::vec3 up(0.0f, 1.0f, 0.0f);
 	glm::mat4 model_view = glm::lookAt(eye, at, up) *
-		glm::scale(glm::vec3(scaleVal[0], scaleVal[1], scaleVal[2])) *
-		glm::translate(glm::vec3(translate[0], translate[1], translate[2]));
+		glm::scale(glm::vec3(scaleVal[0], scaleVal[1], scaleVal[2])) *			//Scale
+		glm::translate(glm::vec3(translate[0], translate[1], translate[2])) *	//Translate 
+		glm::rotate(rotateVal[0], glm::vec3(1, 0, 0)) *							//Rotate X
+		glm::rotate(rotateVal[1], glm::vec3(0, 1, 0)) *							//Rotate Y
+		glm::rotate(rotateVal[2], glm::vec3(0, 0, 1));							//Rotate Z
 	glUniformMatrix4fv(ModelView, 1, GL_FALSE, glm::value_ptr(model_view));
 	glm::mat4 projection = glm::perspective(45.0f, 1.0f, 0.1f, 100.0f);
 	glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projection));
-
 	//Draw
-	//RenderMap();
-	glBindVertexArray(vao[0]);
-	glDrawElements(GL_TRIANGLES, TileIndices.size(), GL_UNSIGNED_INT, NULL);
-	glBindVertexArray(0);
+	RenderMap();
+
 	//Send it to the screen
 	glutSwapBuffers();
+}
+
+void handleKeyboard(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+	case 033:
+		exit(EXIT_SUCCESS);
+		break;
+	}
 }
 
 void handleResize(int w, int h)

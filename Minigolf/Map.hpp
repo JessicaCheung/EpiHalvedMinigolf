@@ -3,6 +3,7 @@
 extern vector<glm::vec3> TileVertices;
 extern vector<glm::vec3> TileNormals;
 extern vector<int> TileIndices;
+extern GLuint vao[3];
 
 class MapObject
 {
@@ -178,7 +179,6 @@ public:
 
 void ReadMap(string fileName);
 void RenderMap();
-//void SetShaders();
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
 void ReadFile(string filename);
 void ReadVertices(fstream& file);

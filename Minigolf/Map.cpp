@@ -16,10 +16,6 @@ vector<Tile> Tiles;		//Our tiles
 ImportObj Tee;				//The tee
 ImportObj Cup;				//The cup
 
-//GLuint buffer[9];
-//GLuint vao[3];
-//GLuint ModelView, Projection;
-
 //Read/parse file and render the map (tiles, tee, and cup)
 void ReadMap(string fileName)
 {
@@ -244,76 +240,13 @@ void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>&
 		temp.clear();
 	}
 }
-//
-//void SetShaders()
-//{
-//	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
-//	glUseProgram(program);
-//
-//	//Initialize shader lighting parameters
-//	glm::vec4 light_position(0.0, 3.0, 1.0, 0.0);
-//	glm::vec4 light_ambient(0.2, 0.2, 0.2, 1.0);
-//	glm::vec4 light_diffuse(0.1, 0.1, 0.5, 1.0);
-//	glm::vec4 light_specular(1.0, 1.0, 1.0, 1.0);
-//	glm::vec4 material_ambient(1.0, 1.0, 1.0, 1.0);
-//	glm::vec4 material_diffuse(1.0, 1.0, 1.0, 1.0);
-//	glm::vec4 material_specular(1.0, 1.0, 1.0, 1.0);
-//	float  material_shininess = 50.0;
-//	glm::vec4 ambient_product = light_ambient * material_ambient;
-//	glm::vec4 diffuse_product = light_diffuse * material_diffuse;
-//	glm::vec4 specular_product = light_specular * material_specular;
-//	glUniform4fv(glGetUniformLocation(program, "AmbientProduct"), 1, (GLfloat*)&ambient_product);
-//	glUniform4fv(glGetUniformLocation(program, "DiffuseProduct"), 1, (GLfloat*)&diffuse_product);
-//	glUniform4fv(glGetUniformLocation(program, "SpecularProduct"), 1, (GLfloat*)&specular_product);
-//	glUniform4fv(glGetUniformLocation(program, "LightPosition"), 1, (GLfloat*)&light_position);
-//	glUniform1f(glGetUniformLocation(program, "Shininess"), material_shininess);
-//	//End lighting
-//	
-//	// Retrieve transformation uniform variable locations
-//	ModelView = glGetUniformLocation(program, "ModelView");
-//	Projection = glGetUniformLocation(program, "Projection");
-//
-//	glGenBuffers(3, buffer);
-//	//Vertex binding
-//	glGenVertexArrays(1, &vao[0]);
-//	glBindVertexArray(vao[0]);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-//	glBufferData(GL_ARRAY_BUFFER, TileVertices.size() * sizeof(glm::vec3), TileVertices.data(), GL_DYNAMIC_DRAW);
-//	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
-//	glBufferData(GL_ARRAY_BUFFER, TileNormals.size() * sizeof(glm::vec3), TileNormals.data(), GL_DYNAMIC_DRAW);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[2]);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, TileIndices.size() * sizeof(GLuint), TileIndices.data(), GL_DYNAMIC_DRAW);
-//
-//	GLuint vPosition = glGetAttribLocation(program, "vPosition");
-//	glEnableVertexAttribArray(vPosition);
-//	GLuint vNormal = glGetAttribLocation(program, "vNormal");
-//	glEnableVertexAttribArray(vNormal);
-//	//Set up vertex arrays
-//	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-//	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
-//	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//	glBindVertexArray(0);
-//
-//}
 
 /*DisplayTiles
 Draws Tiles*/
 void DisplayTiles(vector<glm::vec3> verts, vector<glm::vec3> norms, vector<int> inds)
 {
-/*
-	glBegin(GL_TRIANGLES);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		for (int i = 0; i < inds.size(); i++)
-		{
-			glNormal3f(norms[inds[i]].x, norms[inds[i]].y, norms[inds[i]].z);
-			glVertex3f(verts[inds[i]].x, verts[inds[i]].y, verts[inds[i]].z);
-		}
-	glEnd();*/
-
-	/*glBindVertexArray(vao[0]);
+	glBindVertexArray(vao[0]);
 	glDrawElements(GL_TRIANGLES, TileIndices.size(), GL_UNSIGNED_INT, NULL);
-	glBindVertexArray(0);*/
+	glBindVertexArray(0);
 
 }
