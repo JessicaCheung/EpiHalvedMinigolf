@@ -1,3 +1,4 @@
+#include "main.hpp"
 #include "Map.hpp"
 
 typedef enum {
@@ -15,6 +16,10 @@ float  rotateVal[3] = { 0 };		// Current rotation values
 float scaleVal[3] = { 1.0f, 1.0f, 1.0f };		//Current scale values
 int    mouse_x, mouse_y;		// Current mouse position
 
+GLuint buffer[9];
+GLuint vao[3];
+GLuint ModelView, Projection;
+
 
 int main(int argc, char** argv)
 {
@@ -23,6 +28,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(800, 600);
 
 	glutCreateWindow("minigolf");
+	glewInit();
 	initRendering(argv);
 
 	glutDisplayFunc(display);
@@ -46,48 +52,86 @@ int main(int argc, char** argv)
 
 void initRendering(char** argv)
 {
-	/*GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 50.0 };*/
-	GLfloat mat_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glShadeModel(GL_SMOOTH);
 
-	/*glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);*/
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, mat_diffuse);
-	GLfloat global_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	ReadMap("hole.02.db");
+	ReadMap("hole.01.db");
 	//ReadMap("testcourse3.db");
+
+	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
+	glUseProgram(program);
+
+	//Initialize shader lighting parameters
+	glm::vec4 light_position(1.0, 1.0, 1.0, 0.0);
+	glm::vec4 light_ambient(0.2, 0.2, 0.2, 1.0);
+	glm::vec4 light_diffuse(0.0, 1., 0.0, 1.0);
+	glm::vec4 light_specular(1.0, 1.0, 1.0, 1.0);
+	glm::vec4 material_ambient(1.0, 1.0, 1.0, 1.0);
+	glm::vec4 material_diffuse(1.0, 1.0, 1.0, 1.0);
+	glm::vec4 material_specular(1.0, 1.0, 1.0, 1.0);
+	float  material_shininess = 50.0;
+	glm::vec4 ambient_product = light_ambient * material_ambient;
+	glm::vec4 diffuse_product = light_diffuse * material_diffuse;
+	glm::vec4 specular_product = light_specular * material_specular;
+	glUniform4fv(glGetUniformLocation(program, "AmbientProduct"), 1, (GLfloat*)&ambient_product);
+	glUniform4fv(glGetUniformLocation(program, "DiffuseProduct"), 1, (GLfloat*)&diffuse_product);
+	glUniform4fv(glGetUniformLocation(program, "SpecularProduct"), 1, (GLfloat*)&specular_product);
+	glUniform4fv(glGetUniformLocation(program, "LightPosition"), 1, (GLfloat*)&light_position);
+	glUniform1f(glGetUniformLocation(program, "Shininess"), material_shininess);
+	//End lighting
+
+	// Retrieve transformation uniform variable locations
+	ModelView = glGetUniformLocation(program, "ModelView");
+	Projection = glGetUniformLocation(program, "Projection");
+
+	glGenBuffers(3, buffer);
+	//Vertex binding
+	glGenVertexArrays(1, &vao[0]);
+	glBindVertexArray(vao[0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+	glBufferData(GL_ARRAY_BUFFER, TileVertices.size() * sizeof(glm::vec3), TileVertices.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	glBufferData(GL_ARRAY_BUFFER, TileNormals.size() * sizeof(glm::vec3), TileNormals.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[2]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, TileIndices.size() * sizeof(GLuint), TileIndices.data(), GL_DYNAMIC_DRAW);
+
+	GLuint vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	GLuint vNormal = glGetAttribLocation(program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	//Set up vertex arrays
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(0);
+
 }
 
 void display()
 {
 	//Clear screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	gluLookAt(0.0, 2.0, 3.0,
-		0.0, 0.0, 0.0,
-		0.0, 1.0, 0.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glTranslatef(translate[0], translate[1], translate[2]);
-	glRotatef(rotateVal[0], 1, 0, 0);
-	glRotatef(rotateVal[1], 0, 1, 0);
-	glRotatef(rotateVal[2], 0, 0, 1);
-	glScalef(scaleVal[0], scaleVal[1], scaleVal[2]);
+
+	glm::vec3 at(0.0f, 0.0f, 0.0f);
+	glm::vec3 eye(0.0f, 5.0f, 5.0f);
+	glm::vec3 up(0.0f, 1.0f, 0.0f);
+	glm::mat4 model_view = glm::lookAt(eye, at, up) *
+		glm::scale(glm::vec3(scaleVal[0], scaleVal[1], scaleVal[2])) *
+		glm::translate(glm::vec3(translate[0], translate[1], translate[2]));
+	glUniformMatrix4fv(ModelView, 1, GL_FALSE, glm::value_ptr(model_view));
+	glm::mat4 projection = glm::perspective(45.0f, 1.0f, 0.1f, 100.0f);
+	glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projection));
 
 	//Draw
-	RenderMap();
-
+	//RenderMap();
+	glBindVertexArray(vao[0]);
+	glDrawElements(GL_TRIANGLES, TileIndices.size(), GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(0);
 	//Send it to the screen
 	glutSwapBuffers();
 }
@@ -97,14 +141,9 @@ void handleResize(int w, int h)
 
 	//Convert from coordinates to pixel values
 	glViewport(0, 0, w, h);
-
-	glMatrixMode(GL_PROJECTION); //Set camera to perspective
-
-	//Reset camera
-	glLoadIdentity();
-
-	//camera angle, width-to-height ratio, and near z and far z clipping coordinates
-	gluPerspective(85.0, (double)w / (double)h, .10, 200.0);
+	GLfloat aspect = GLfloat(w) / h;
+	glm::mat4 projection = glm::perspective(45.0f, aspect, 0.1f, 60.0f);
+	glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projection));
 }
 
 void handle_menu(int ID)

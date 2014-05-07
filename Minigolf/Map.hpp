@@ -1,17 +1,8 @@
-#include <iostream>
-#include <algorithm>
-#include <sstream>
-#include <stdlib.h>
-#include <GL/glew.h>
-#include <gl/glut.h>
-#include <gl/freeglut.h>
-#include <glm/glm.hpp>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <math.h>
+#include "main.hpp"
 
-using namespace std;
+extern vector<glm::vec3> TileVertices;
+extern vector<glm::vec3> TileNormals;
+extern vector<int> TileIndices;
 
 class MapObject
 {
@@ -185,15 +176,10 @@ public:
 	}
 };
 
-void handleResize(int w, int h);
-void handle_menu(int ID);
-void handle_motion(int x, int y);
-void handle_mouse(int b, int s, int x, int y);
-void initRendering(char** argv);
-void display();
-
 void ReadMap(string fileName);
 void RenderMap();
+//void SetShaders();
+GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
 void ReadFile(string filename);
 void ReadVertices(fstream& file);
 void ParseLine(vector<string> lines);

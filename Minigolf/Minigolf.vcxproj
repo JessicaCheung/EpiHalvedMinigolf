@@ -84,10 +84,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="InitShader.cpp" />
+    <ClCompile Include="LoadShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="main.hpp" />
     <ClInclude Include="Map.hpp" />
   </ItemGroup>
   <ItemGroup>
