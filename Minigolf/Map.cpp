@@ -263,10 +263,26 @@ void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>&
 void DisplayMap(int num, int size)
 {
 	GLuint* vao = getVAO();
+	GLuint shader = getShader();
+
+	glm::vec4 greenColor(0.0f, 1.0f, 0.0f, 1.0);
+	glm::vec4 whiteColor(1.0f, 1.0f, 1.0f, 1.0);
+	glm::vec4 redColor(1.0f, 0.0f, 0.0f, 1.0);
+	switch (num)
+	{
+	case 0:
+		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&greenColor);
+		break;
+	case 1:
+		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&whiteColor);
+		break;
+	case 2:
+		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&redColor);
+		break;
+	}
 	glBindVertexArray(vao[num]);
 	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
-
 }
 
 MapObject getTileBuffer()

@@ -19,6 +19,7 @@ int    mouse_x, mouse_y;		// Current mouse position
 GLuint buffer[9];
 GLuint vao[3];
 GLuint ModelView, Projection;
+GLuint shadertemp;
 
 
 int main(int argc, char** argv)
@@ -68,13 +69,14 @@ void setShaders()
 	ImportObj Tee = getTeeBuffer();
 	ImportObj Cup = getCupBuffer();
 	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
+	shadertemp = program;
 	glUseProgram(program);
 	GLuint vPosition, vNormal;
 
 	//Initialize shader lighting parameters
-	glm::vec4 light_position(1.0, 1.0, 1.0, 0.0);
+	glm::vec4 light_position(0.0, 1.0, 0.0, 1.0);
 	glm::vec4 light_ambient(0.2, 0.2, 0.2, 1.0);
-	glm::vec4 light_diffuse(0.0, 1., 0.0, 1.0);
+	glm::vec4 light_diffuse(1.0, 1.0, 1.0, 1.0);
 	glm::vec4 light_specular(1.0, 1.0, 1.0, 1.0);
 	glm::vec4 material_ambient(1.0, 1.0, 1.0, 1.0);
 	glm::vec4 material_diffuse(1.0, 1.0, 1.0, 1.0);
@@ -99,6 +101,8 @@ void setShaders()
 
 	//Vertex binding (Tiles)
 	glBindVertexArray(vao[0]);
+	/*glm::vec4 greenColor(0.0f, 1.0f, 0.0f, 1.0);
+	glUniform4fv(glGetUniformLocation(program, "MatColor"), 1, (GLfloat*)&greenColor);*/
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
 	glBufferData(GL_ARRAY_BUFFER, Tiles.Vertices.size() * sizeof(glm::vec3), Tiles.Vertices.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
@@ -118,6 +122,8 @@ void setShaders()
 
 	//Vertex binding (Tee)
 	glBindVertexArray(vao[1]);
+	glm::vec4 whiteColor(1.0f, 1.0f, 1.0f, 1.0);
+	glUniform4fv(glGetUniformLocation(program, "MatColor"), 1, (GLfloat*)&whiteColor);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
 	glBufferData(GL_ARRAY_BUFFER, Tee.Vertices.size() * sizeof(glm::vec3), Tee.Vertices.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
@@ -317,4 +323,9 @@ void handle_mouse(int b, int s, int x, int y)
 GLuint* getVAO()
 {
 	return vao;
+}
+
+GLuint getShader()
+{
+	return shadertemp;
 }
