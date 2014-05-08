@@ -1,8 +1,8 @@
 #include "main.hpp"
-
-extern vector<glm::vec3> TileVertices;
-extern vector<glm::vec3> TileNormals;
-extern vector<int> TileIndices;
+//
+//extern vector<glm::vec3> TileVertices;
+//extern vector<glm::vec3> TileNormals;
+//extern vector<int> TileIndices;
 extern GLuint vao[3];
 
 class MapObject
@@ -10,7 +10,19 @@ class MapObject
 public:
 	int TileID;						//Tile ID of object
 	vector<glm::vec3> Vertices;		//List of vertices
+	vector<glm::vec3> Normals;		//List of normals
 	vector<int> Indices;			//Indices to draw vertices+normals
+
+	//Default constructor
+	MapObject() { }
+
+	//Constructor (For Buffer creation)
+	MapObject(vector<glm::vec3> verts, vector<glm::vec3> norms, vector<int> inds)
+	{
+		Vertices = verts;
+		Normals = norms;
+		Indices = inds;
+	}
 
 	/*Adds a vertex to the list of vertices and an empty normal*/
 	void AddVertex(glm::vec3 vert)
@@ -40,6 +52,17 @@ public:
 		}
 	}
 
+
+	/*Prints the list of normals*/
+	void PrintNormals()
+	{
+		for (int i = 0; i < Normals.size(); i++)
+		{
+			cout << "Normals: " << i << endl;
+			cout << Normals[i].x << ", " << Normals[i].y << ", " << Normals[i].z << endl;
+		}
+	}
+
 	/*Prints the list of indices*/
 	void PrintIndices()
 	{
@@ -55,7 +78,6 @@ class ImportObj : public MapObject
 {
 public:
 	glm::vec3 Coordinate;		//Position of Tee
-	vector<glm::vec3> Normals;	//List of normals
 
 	//Constructors
 	ImportObj()
@@ -112,16 +134,6 @@ public:
 			cout << Coordinate[i] << ", ";
 		cout << endl;
 	}
-
-	/*Prints the list of normals*/
-	void PrintNormals()
-	{
-		for (int i = 0; i < Normals.size(); i++)
-		{
-			cout << "Normals: " << i << endl;
-			cout << Normals[i].x << ", " << Normals[i].y << ", " << Normals[i].z << endl;
-		}
-	}
 };
 
 class Tile : public MapObject
@@ -177,6 +189,8 @@ public:
 	}
 };
 
+//extern ImportObj Tee;
+
 void ReadMap(string fileName);
 void RenderMap();
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
@@ -186,7 +200,9 @@ void ParseLine(vector<string> lines);
 void ParseTile(vector<string> lines);
 void ParseTeeCup(vector<string> lines, ImportObj& obj);
 vector<string> SplitString(const char *str, char c = ' ');
+void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &elements);
 void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>& norms, vector<int>& inds);
-//void BuildImportedObj(ImportObj obj, vector<glm::vec3>& verts, vector<glm::vec3>& norms, vector<int>& inds);
-void DisplayTiles(vector<glm::vec3> verts, vector<glm::vec3> norms, vector<int> inds);
-//void DisplayImportedObj(vector<glm::vec3> verts, vector<glm::vec3> norms, vector<int> inds);
+void DisplayMap(int num, int size);
+MapObject getTileBuffer();
+ImportObj getTeeBuffer();
+ImportObj getCupBuffer();

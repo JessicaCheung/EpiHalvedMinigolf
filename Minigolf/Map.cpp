@@ -4,15 +4,11 @@ vector<glm::vec3> TileVertices;
 vector<glm::vec3> TileNormals;
 vector<int> TileIndices;
 
-vector<glm::vec3> TeeVertices;
-vector<glm::vec3> TeeNormals;
-vector<int> TeeIndices;
-
 vector<glm::vec3> CupVertices;
 vector<glm::vec3> CupNormals;
 vector<int> CupIndices;
 
-vector<Tile> Tiles;		//Our tiles
+vector<Tile> Tiles;			//Our tiles
 ImportObj Tee;				//The tee
 ImportObj Cup;				//The cup
 
@@ -21,12 +17,14 @@ void ReadMap(string fileName)
 {
 	ReadFile(fileName);
 	BuildTiles(Tiles, TileVertices, TileNormals, TileIndices);
-	//SetShaders();
+	load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices);
+	Tee.CalculateNormals();
 }
 
 void RenderMap()
 {
-	DisplayTiles(TileVertices, TileNormals, TileIndices);
+	DisplayMap(0, TileIndices.size());
+	DisplayMap(1, Tee.Indices.size());
 }
 
 //Check if the file exists
@@ -167,7 +165,6 @@ void ParseTeeCup(vector<string> lines, ImportObj& obj)
 vector<string> SplitString(const char *str, char c)
 {
 	vector<string> result;
-
 	do
 	{
 		//Start at the first character in our current sequence; after each loop, this will be the first character after the delimiter (Ex. "h" the first time then "c" after one loop in the string "hello chris")
@@ -176,14 +173,38 @@ vector<string> SplitString(const char *str, char c)
 		//If the current character is not the delimiter (a space character in our case) and the pointer isn't null, move onto the next character
 		while (*str != c && *str)
 			str++;
-
 		//We encountered the delimiter or a null character, so construct a new string based on the characters we had before this condition and add that to our vector
 		result.push_back(string(begin, str));
-
 		//Make sure the next character isn't a null character, which would end the string
 	} while (*str++ != 0);
-
 	return result;
+}
+
+void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &elements)
+{
+	ifstream in(filename, ios::in);
+	if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
+
+	string line;
+	while (getline(in, line))
+	{
+		if (line.substr(0, 2) == "v ")
+		{
+			istringstream s(line.substr(2));
+			glm::vec3 v; s >> v.x; s >> v.y; s >> v.z;
+			vertices.push_back(v);
+		}
+		else if (line.substr(0, 2) == "f ")
+		{
+			istringstream s(line.substr(2));
+			int a, b, c;
+			s >> a; s >> b; s >> c;
+			a--; b--; c--;
+			elements.push_back(a); elements.push_back(b); elements.push_back(c);
+		}
+		else if (line[0] == '#') { /* ignoring this line */ }
+		else { /* ignoring this line */ }
+	}
 }
 
 /*FindVectorVec3
@@ -241,12 +262,26 @@ void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>&
 	}
 }
 
-/*DisplayTiles
-Draws Tiles*/
-void DisplayTiles(vector<glm::vec3> verts, vector<glm::vec3> norms, vector<int> inds)
+/*Display things on map*/
+void DisplayMap(int num, int size)
 {
-	glBindVertexArray(vao[0]);
-	glDrawElements(GL_TRIANGLES, TileIndices.size(), GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(vao[num]);
+	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 
+}
+
+MapObject getTileBuffer()
+{
+	return MapObject(TileVertices, TileNormals, TileIndices);
+}
+
+ImportObj getTeeBuffer()
+{
+	return Tee;
+}
+
+ImportObj getCupBuffer()
+{
+	return Cup;
 }

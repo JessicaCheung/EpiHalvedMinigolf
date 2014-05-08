@@ -64,6 +64,8 @@ void initRendering(char** argv)
 
 void setShaders()
 {
+	MapObject Tiles = getTileBuffer();
+	ImportObj Tee = getTeeBuffer();
 	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
 	glUseProgram(program);
 
@@ -90,26 +92,45 @@ void setShaders()
 	ModelView = glGetUniformLocation(program, "ModelView");
 	Projection = glGetUniformLocation(program, "Projection");
 
-	glGenBuffers(3, buffer);
-	//Vertex binding
-	glGenVertexArrays(1, &vao[0]);
+	glGenBuffers(6, buffer);
+	glGenVertexArrays(2, vao);
+	//Vertex binding (Tiles)
 	glBindVertexArray(vao[0]);
-
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-	glBufferData(GL_ARRAY_BUFFER, TileVertices.size() * sizeof(glm::vec3), TileVertices.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, Tiles.Vertices.size() * sizeof(glm::vec3), Tiles.Vertices.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
-	glBufferData(GL_ARRAY_BUFFER, TileNormals.size() * sizeof(glm::vec3), TileNormals.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, Tiles.Normals.size() * sizeof(glm::vec3), Tiles.Normals.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[2]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, TileIndices.size() * sizeof(GLuint), TileIndices.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Tiles.Indices.size() * sizeof(GLuint), Tiles.Indices.data(), GL_DYNAMIC_DRAW);
 
 	GLuint vPosition = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(vPosition);
 	GLuint vNormal = glGetAttribLocation(program, "vNormal");
 	glEnableVertexAttribArray(vNormal);
+
 	//Set up vertex arrays
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(0);
+
+	//Vertex binding (Tee)
+	glBindVertexArray(vao[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
+	glBufferData(GL_ARRAY_BUFFER, Tee.Vertices.size() * sizeof(glm::vec3), Tee.Vertices.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
+	glBufferData(GL_ARRAY_BUFFER, Tee.Normals.size() * sizeof(glm::vec3), Tee.Normals.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[5]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Tee.Indices.size() * sizeof(GLuint), Tee.Indices.data(), GL_DYNAMIC_DRAW);
+	vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	vNormal = glGetAttribLocation(program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	//Set up vertex arrays
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
 	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindVertexArray(0);
 }
