@@ -262,6 +262,7 @@ void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>&
 /*Display things on map*/
 void DisplayMap(int num, int size)
 {
+	GLuint* vao = getVAO();
 	glBindVertexArray(vao[num]);
 	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);

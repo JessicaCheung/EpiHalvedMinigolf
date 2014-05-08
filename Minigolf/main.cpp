@@ -313,3 +313,8 @@ void handle_mouse(int b, int s, int x, int y)
 	mouse_x = x;
 	mouse_y = glutGet(GLUT_WINDOW_HEIGHT) - y;
 }					// End routine handle_mouse
+
+GLuint* getVAO()
+{
+	return vao;
+}

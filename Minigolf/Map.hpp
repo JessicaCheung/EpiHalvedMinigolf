@@ -1,5 +1,4 @@
 #include "main.hpp"
-extern GLuint vao[3];
 
 class MapObject
 {

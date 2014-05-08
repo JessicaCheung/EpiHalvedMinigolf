@@ -23,3 +23,4 @@ void handleResize(int w, int h);
 void handle_menu(int ID);
 void handle_motion(int x, int y);
 void handle_mouse(int b, int s, int x, int y);
+GLuint* getVAO();
