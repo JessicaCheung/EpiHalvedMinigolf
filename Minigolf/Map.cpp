@@ -10,8 +10,8 @@ void ReadMap(string fileName)
 {
 	ReadFile(fileName);
 	BuildTiles(Tiles, TileBuffer.Vertices, TileBuffer.Normals, TileBuffer.Indices);
-	load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices);
-	load_obj("Cup.obj", Cup.Vertices, Cup.Indices);
+	load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
+	load_obj("Cup.obj", Cup.Vertices, Cup.Indices, glm::vec3(Cup.Coordinate.x, Cup.Coordinate.y - 0.05f, Cup.Coordinate.z));
 	Tee.CalculateNormals();
 	Cup.CalculateNormals();
 }
@@ -176,7 +176,7 @@ vector<string> SplitString(const char *str, char c)
 	return result;
 }
 
-void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &elements)
+void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &elements, glm::vec3 coor)
 {
 	ifstream in(filename, ios::in);
 	if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
@@ -188,6 +188,7 @@ void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &el
 		{
 			istringstream s(line.substr(2));
 			glm::vec3 v; s >> v.x; s >> v.y; s >> v.z;
+			v += coor;
 			vertices.push_back(v);
 		}
 		else if (line.substr(0, 2) == "f ")

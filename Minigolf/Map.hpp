@@ -117,7 +117,8 @@ public:
 
 			for (int j = i; j < i + 3; j++)
 			{
-				Normals[Indices[j]] = glm::normalize(Normals[Indices[j]] + normal);
+				//Normals[Indices[j]] = glm::normalize(Normals[Indices[j]] + normal);
+				Normals[Indices[j]] = (Normals[Indices[j]] + normal);
 			}
 		}
 	}
@@ -196,7 +197,7 @@ void ParseLine(vector<string> lines);
 void ParseTile(vector<string> lines);
 void ParseTeeCup(vector<string> lines, ImportObj& obj);
 vector<string> SplitString(const char *str, char c = ' ');
-void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &elements);
+void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &elements, glm::vec3 coor);
 void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>& norms, vector<int>& inds);
 void DisplayMap(int num, int size);
 MapObject getTileBuffer();
