@@ -1,8 +1,4 @@
 #include "main.hpp"
-//
-//extern vector<glm::vec3> TileVertices;
-//extern vector<glm::vec3> TileNormals;
-//extern vector<int> TileIndices;
 extern GLuint vao[3];
 
 class MapObject

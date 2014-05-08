@@ -1,14 +1,7 @@
 #include "Map.hpp"
 
-vector<glm::vec3> TileVertices;
-vector<glm::vec3> TileNormals;
-vector<int> TileIndices;
-
-vector<glm::vec3> CupVertices;
-vector<glm::vec3> CupNormals;
-vector<int> CupIndices;
-
 vector<Tile> Tiles;			//Our tiles
+MapObject TileBuffer;		//Tile buffer object
 ImportObj Tee;				//The tee
 ImportObj Cup;				//The cup
 
@@ -16,15 +9,18 @@ ImportObj Cup;				//The cup
 void ReadMap(string fileName)
 {
 	ReadFile(fileName);
-	BuildTiles(Tiles, TileVertices, TileNormals, TileIndices);
+	BuildTiles(Tiles, TileBuffer.Vertices, TileBuffer.Normals, TileBuffer.Indices);
 	load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices);
+	load_obj("Cup.obj", Cup.Vertices, Cup.Indices);
 	Tee.CalculateNormals();
+	Cup.CalculateNormals();
 }
 
 void RenderMap()
 {
-	DisplayMap(0, TileIndices.size());
+	DisplayMap(0, TileBuffer.Indices.size());
 	DisplayMap(1, Tee.Indices.size());
+	DisplayMap(2, Cup.Indices.size());
 }
 
 //Check if the file exists
@@ -273,7 +269,7 @@ void DisplayMap(int num, int size)
 
 MapObject getTileBuffer()
 {
-	return MapObject(TileVertices, TileNormals, TileIndices);
+	return TileBuffer;
 }
 
 ImportObj getTeeBuffer()
