@@ -1,5 +1,5 @@
-#include "main.hpp"
-#include "Map.hpp"
+//#include "PhysicsObject.hpp"
+#include "Ball.hpp"
 
 typedef enum {
 	TRANSLATE,
@@ -16,11 +16,24 @@ float  rotateVal[3] = { 0 };		// Current rotation values
 float scaleVal[3] = { 1.0f, 1.0f, 1.0f };		//Current scale values
 int    mouse_x, mouse_y;		// Current mouse position
 
-GLuint buffer[9];
-GLuint vao[3];
+GLuint buffer[12];
+GLuint vao[4];
 GLuint ModelView, Projection;
 GLuint shadertemp;
 
+//Change in time after each clock tick
+const float deltaT = 50.0f;
+
+//Total game time
+float gameTime;
+float prevgameTime;
+
+//Physics lag time; we need to see how many frames of physics simulations we need to go through to catch up
+//This ensures that the game behaves the same on any hardware
+float physicsLagTime;
+
+//The golf ball (NOTE: This should be moved into Map later)
+Ball GolfBall;
 
 int main(int argc, char** argv)
 {
@@ -32,22 +45,46 @@ int main(int argc, char** argv)
 	glewInit();
 	initRendering(argv);
 
-	glutDisplayFunc(display);
-	glutKeyboardFunc(handleKeyboard);
-	glutReshapeFunc(handleResize);
-	glutMotionFunc(handle_motion);
-	glutMouseFunc(handle_mouse);
+	//Start update loop
+	while (true)
+	{
+		//Update gametime
+		//gameTime = currentdate (or something)
 
-	glutCreateMenu(handle_menu);	// Setup GLUT popup menu
-	glutAddMenuEntry("Translate", 0);
-	glutAddMenuEntry("Rotate X", 1);
-	glutAddMenuEntry("Rotate Y", 2);
-	glutAddMenuEntry("Rotate Z", 3);
-	glutAddMenuEntry("Scale", 4);
-	glutAddMenuEntry("Quit", 5);
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
+		//Check how much time has passed between clock ticks
+		physicsLagTime = (gameTime - prevgameTime);
 
-	glutMainLoop();
+		//See how many physics simulations we need to go through
+		//Ideally it should be 1, but this makes it so if there's lag anywhere, everything will still behave the same way
+		while (physicsLagTime > deltaT)
+		{
+			//Perform a physics simulation
+
+
+			physicsLagTime -= deltaT;
+		}
+
+		//Set the previous game time to the current game time
+		prevgameTime = gameTime;
+
+		//Render everything
+		glutDisplayFunc(display);
+		glutKeyboardFunc(handleKeyboard);
+		glutReshapeFunc(handleResize);
+		glutMotionFunc(handle_motion);
+		glutMouseFunc(handle_mouse);
+
+		glutCreateMenu(handle_menu);	// Setup GLUT popup menu
+		glutAddMenuEntry("Translate", 0);
+		glutAddMenuEntry("Rotate X", 1);
+		glutAddMenuEntry("Rotate Y", 2);
+		glutAddMenuEntry("Rotate Z", 3);
+		glutAddMenuEntry("Scale", 4);
+		glutAddMenuEntry("Quit", 5);
+		glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+		glutMainLoop();
+	}
 	return 0;
 }
 
@@ -58,6 +95,13 @@ void initRendering(char** argv)
 
 	glEnable(GL_DEPTH_TEST);
 	ReadMap("hole.01.db");
+	
+	ImportObj temp;
+	ImportObj Tee = getTeeBuffer();
+	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
+	temp.CalculateNormals();
+	GolfBall = Ball(temp, Tee.Coordinate);
+	GolfBall.Move(glm::vec3(1, 0, 1));
 	//ReadMap("testcourse3.db");
 	setShaders();
 
@@ -96,8 +140,8 @@ void setShaders()
 	ModelView = glGetUniformLocation(program, "ModelView");
 	Projection = glGetUniformLocation(program, "Projection");
 
-	glGenBuffers(9, buffer);
-	glGenVertexArrays(3, vao);
+	glGenBuffers(12, buffer);
+	glGenVertexArrays(4, vao);
 
 	//Vertex binding (Tiles)
 	glBindVertexArray(vao[0]);
@@ -159,6 +203,27 @@ void setShaders()
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[7]);
 	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindVertexArray(0);
+
+	//Vertex binding (ball)
+	glBindVertexArray(vao[3]);
+	//glm::vec4 whiteColor(1.0f, 1.0f, 1.0f, 1.0);
+	glUniform4fv(glGetUniformLocation(program, "MatColor"), 1, (GLfloat*)&whiteColor);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[9]);
+	glBufferData(GL_ARRAY_BUFFER, GolfBall.Model.Vertices.size() * sizeof(glm::vec3), GolfBall.Model.Vertices.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[10]);
+	glBufferData(GL_ARRAY_BUFFER, GolfBall.Model.Normals.size() * sizeof(glm::vec3), GolfBall.Model.Normals.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[11]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, GolfBall.Model.Indices.size() * sizeof(GLuint), GolfBall.Model.Indices.data(), GL_DYNAMIC_DRAW);
+	vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	vNormal = glGetAttribLocation(program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	//Set up vertex arrays
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[9]);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[10]);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(0);
 }
 
 void display()
@@ -180,6 +245,7 @@ void display()
 	glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projection));
 	//Draw
 	RenderMap();
+	DisplayMap(3, GolfBall.Model.Indices.size());
 
 	//Send it to the screen
 	glutSwapBuffers();

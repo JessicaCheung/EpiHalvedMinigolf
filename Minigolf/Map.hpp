@@ -202,3 +202,4 @@ void DisplayMap(int num, int size);
 MapObject getTileBuffer();
 ImportObj getTeeBuffer();
 ImportObj getCupBuffer();
+vector<Tile> getTiles();

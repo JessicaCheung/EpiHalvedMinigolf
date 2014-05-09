@@ -19,7 +19,7 @@ void ReadMap(string fileName)
 void RenderMap()
 {
 	DisplayMap(0, TileBuffer.Indices.size());
-	DisplayMap(1, Tee.Indices.size());
+	//DisplayMap(1, Tee.Indices.size());
 	DisplayMap(2, Cup.Indices.size());
 }
 
@@ -279,6 +279,9 @@ void DisplayMap(int num, int size)
 	case 2:
 		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&redColor);
 		break;
+	case 3:
+		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&whiteColor);
+		break;
 	}
 	glBindVertexArray(vao[num]);
 	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, NULL);
@@ -298,4 +301,9 @@ ImportObj getTeeBuffer()
 ImportObj getCupBuffer()
 {
 	return Cup;
+}
+
+vector<Tile> getTiles()
+{
+	return Tiles;
 }

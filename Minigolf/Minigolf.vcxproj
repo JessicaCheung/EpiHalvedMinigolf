@@ -83,14 +83,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ball.hpp" />
     <ClCompile Include="InitShader.cpp" />
     <ClCompile Include="LoadShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Physics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.hpp" />
     <ClInclude Include="Map.hpp" />
+    <ClInclude Include="Physics.hpp" />
+    <ClInclude Include="PhysicsObject.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fshader5.glsl" />
