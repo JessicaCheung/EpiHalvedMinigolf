@@ -3,23 +3,6 @@
 //A world object affected by physics; it is an abstract class
 class PhysicsObject
 {
-private:
-	void ReloadPosition()
-	{
-		vector<glm::vec3> newvertices;
-		vector<int> newelements;
-		vector<glm::vec3> newnormals;
-
-		Model.Indices.clear();
-		load_obj("BallSmall.obj", newvertices, newelements, Model.Coordinate);
-
-		Model.Vertices.swap(newvertices);
-		Model.Indices.swap(newelements);
-		Model.Normals.swap(newnormals);
-
-		Model.CalculateNormals();
-	}
-
 public:
 	//The model to import
 	ImportObj Model;
@@ -65,13 +48,16 @@ public:
 		/*if (Model != NULL)*/ Model.Coordinate += Velocity;
 		//else Location += Velocity;
 
-		ReloadPosition();
+		//ReloadPosition();
 	}
 
+	//Move the object, passing a velocity in
 	virtual void Move(glm::vec3 newvelocity)
 	{
-		Model.Coordinate += newvelocity;
-		ReloadPosition();
+		Model.Coordinate.x += newvelocity.x;
+		Model.Coordinate.y += newvelocity.y;
+		Model.Coordinate.z += newvelocity.z;
+		//ReloadPosition();
 	}
 
 	//Checks for collisions; pure virtual because each object can have a different shape, thus needing to raycast from different points

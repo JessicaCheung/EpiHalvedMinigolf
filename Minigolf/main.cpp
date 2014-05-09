@@ -19,6 +19,7 @@ int    mouse_x, mouse_y;		// Current mouse position
 GLuint buffer[12];
 GLuint vao[4];
 GLuint ModelView, Projection;
+glm::mat4 model_view;
 GLuint shadertemp;
 
 //Change in time after each clock tick
@@ -101,7 +102,6 @@ void initRendering(char** argv)
 	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
 	temp.CalculateNormals();
 	GolfBall = Ball(temp, Tee.Coordinate);
-	GolfBall.Move(glm::vec3(1, 0, 1));
 	//ReadMap("testcourse3.db");
 	setShaders();
 
@@ -234,7 +234,7 @@ void display()
 	glm::vec3 at(0.0f, 0.0f, 0.0f);
 	glm::vec3 eye(0.0f, 5.0f, 5.0f);
 	glm::vec3 up(0.0f, 1.0f, 0.0f);
-	glm::mat4 model_view = glm::lookAt(eye, at, up) *
+	model_view = glm::lookAt(eye, at, up) *
 		glm::scale(glm::vec3(scaleVal[0], scaleVal[1], scaleVal[2])) *			//Scale
 		glm::translate(glm::vec3(translate[0], translate[1], translate[2])) *	//Translate 
 		glm::rotate(rotateVal[0], glm::vec3(1, 0, 0)) *							//Rotate X
@@ -257,6 +257,18 @@ void handleKeyboard(unsigned char key, int x, int y)
 	{
 	case 033:
 		exit(EXIT_SUCCESS);
+		break;
+	case 105:
+		GolfBall.Move(glm::vec3(0, 0, 1));
+		break;
+	case 106:
+		GolfBall.Move(glm::vec3(-1, 0, 0));
+		break;
+	case 108:
+		GolfBall.Move(glm::vec3(1, 0, 0));
+		break;
+	case 107:
+		GolfBall.Move(glm::vec3(0, 0, -1));
 		break;
 	}
 }
@@ -394,4 +406,19 @@ GLuint* getVAO()
 GLuint getShader()
 {
 	return shadertemp;
+}
+
+glm::vec3 getNewCoor()
+{
+	return GolfBall.Model.Coordinate;
+}
+
+GLuint getModelView()
+{
+	return ModelView;
+}
+
+glm::mat4 getmodel_view()
+{
+	return model_view;
 }

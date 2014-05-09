@@ -25,3 +25,6 @@ void handle_motion(int x, int y);
 void handle_mouse(int b, int s, int x, int y);
 GLuint* getVAO();
 GLuint getShader();
+glm::vec3 getNewCoor();
+GLuint getModelView();
+glm::mat4 getmodel_view();

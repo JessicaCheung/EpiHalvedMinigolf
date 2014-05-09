@@ -268,6 +268,12 @@ void DisplayMap(int num, int size)
 	glm::vec4 greenColor(0.0f, 1.0f, 0.0f, 1.0);
 	glm::vec4 whiteColor(1.0f, 1.0f, 1.0f, 1.0);
 	glm::vec4 redColor(1.0f, 0.0f, 0.0f, 1.0);
+	glm::vec3 at(0.0f, 0.0f, 0.0f);
+	glm::vec3 eye(0.0f, 5.0f, 5.0f);
+	glm::vec3 up(0.0f, 1.0f, 0.0f);
+	GLuint ModelView = getModelView();
+	glm::mat4 model_view = getmodel_view();
+	glm::vec3 newCoor;
 	switch (num)
 	{
 	case 0:
@@ -280,7 +286,11 @@ void DisplayMap(int num, int size)
 		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&redColor);
 		break;
 	case 3:
+		newCoor = getNewCoor();
+		model_view *= glm::translate(newCoor);
+		glUniformMatrix4fv(ModelView, 1, GL_FALSE, glm::value_ptr(model_view));
 		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&whiteColor);
+		glutPostRedisplay();
 		break;
 	}
 	glBindVertexArray(vao[num]);
