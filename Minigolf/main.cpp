@@ -36,6 +36,32 @@ float physicsLagTime;
 //The golf ball (NOTE: This should be moved into Map later)
 Ball GolfBall;
 
+//The main update function
+void Update()
+{
+	//Update gametime
+	//gameTime = currentdate (or something)
+
+	//Check how much time has passed between clock ticks
+	physicsLagTime = (gameTime - prevgameTime);
+
+	//NOTE: TEMPORARY FOR NOW
+	GolfBall.Move(getTiles());
+
+	//See how many physics simulations we need to go through
+	//Ideally it should be 1, but this makes it so if there's lag anywhere, everything will still behave the same way
+	while (physicsLagTime > deltaT)
+	{
+		//Perform a physics simulation
+		GolfBall.Move(getTiles());
+
+		physicsLagTime -= deltaT;
+	}
+
+	//Set the previous game time to the current game time
+	prevgameTime = gameTime;
+}
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -46,46 +72,26 @@ int main(int argc, char** argv)
 	glewInit();
 	initRendering(argv);
 
-	//Start update loop
-	while (true)
-	{
-		//Update gametime
-		//gameTime = currentdate (or something)
+	//Render everything
+	glutDisplayFunc(display);
+	glutKeyboardFunc(handleKeyboard);
+	glutReshapeFunc(handleResize);
+	glutMotionFunc(handle_motion);
+	glutMouseFunc(handle_mouse);
 
-		//Check how much time has passed between clock ticks
-		physicsLagTime = (gameTime - prevgameTime);
+	glutCreateMenu(handle_menu);	// Setup GLUT popup menu
+	glutAddMenuEntry("Translate", 0);
+	glutAddMenuEntry("Rotate X", 1);
+	glutAddMenuEntry("Rotate Y", 2);
+	glutAddMenuEntry("Rotate Z", 3);
+	glutAddMenuEntry("Scale", 4);
+	glutAddMenuEntry("Quit", 5);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-		//See how many physics simulations we need to go through
-		//Ideally it should be 1, but this makes it so if there's lag anywhere, everything will still behave the same way
-		while (physicsLagTime > deltaT)
-		{
-			//Perform a physics simulation
+	//The update loop
+	glutIdleFunc(Update);
+	glutMainLoop();
 
-
-			physicsLagTime -= deltaT;
-		}
-
-		//Set the previous game time to the current game time
-		prevgameTime = gameTime;
-
-		//Render everything
-		glutDisplayFunc(display);
-		glutKeyboardFunc(handleKeyboard);
-		glutReshapeFunc(handleResize);
-		glutMotionFunc(handle_motion);
-		glutMouseFunc(handle_mouse);
-
-		glutCreateMenu(handle_menu);	// Setup GLUT popup menu
-		glutAddMenuEntry("Translate", 0);
-		glutAddMenuEntry("Rotate X", 1);
-		glutAddMenuEntry("Rotate Y", 2);
-		glutAddMenuEntry("Rotate Z", 3);
-		glutAddMenuEntry("Scale", 4);
-		glutAddMenuEntry("Quit", 5);
-		glutAttachMenu(GLUT_RIGHT_BUTTON);
-
-		glutMainLoop();
-	}
 	return 0;
 }
 
@@ -102,6 +108,7 @@ void initRendering(char** argv)
 	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
 	temp.CalculateNormals();
 	GolfBall = Ball(temp, Tee.Coordinate);
+	GolfBall.AddForce(glm::vec3(.5, 0, -.5), .01);
 	//ReadMap("testcourse3.db");
 	setShaders();
 
@@ -259,16 +266,16 @@ void handleKeyboard(unsigned char key, int x, int y)
 		exit(EXIT_SUCCESS);
 		break;
 	case 105:
-		GolfBall.Move(glm::vec3(0, 0, 1));
+		GolfBall.Move(glm::vec3(0, 0, -0.1));
 		break;
 	case 106:
-		GolfBall.Move(glm::vec3(-1, 0, 0));
+		GolfBall.Move(glm::vec3(-0.1, 0, 0));
 		break;
 	case 108:
-		GolfBall.Move(glm::vec3(1, 0, 0));
+		GolfBall.Move(glm::vec3(0.1, 0, 0));
 		break;
 	case 107:
-		GolfBall.Move(glm::vec3(0, 0, -1));
+		GolfBall.Move(glm::vec3(0, 0, 0.1));
 		break;
 	}
 }

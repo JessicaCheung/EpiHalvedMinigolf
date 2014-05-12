@@ -17,6 +17,7 @@ using namespace std;
 
 void initRendering(char** argv);
 void setShaders();
+void Update();
 void display();
 void handleKeyboard(unsigned char key, int x, int y);
 void handleResize(int w, int h);

@@ -47,6 +47,12 @@
     <ClInclude Include="PhysicsObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MathHelper.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fshader5.glsl">

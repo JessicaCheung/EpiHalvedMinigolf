@@ -1,6 +1,7 @@
 #include "Map.hpp"
 
-//Shoot a ray from a point in a certain direction for a certain distance; the default value of 0 indicates an infinite distance
 //This returns the wall that the ray may collide with
-void Raycast(glm::vec3 origlocation, glm::vec3 direction, float distance);
+//bool RayPlaneCollision(glm::vec3 tileposition, glm::vec3 direction, const Tile &tile, double &collisiondistance);
 
+//glm::vec3 GetMinPoints(vector<glm::vec3> vertices);
+//glm::vec3 GetMaxPoints(vector<glm::vec3> vertices);

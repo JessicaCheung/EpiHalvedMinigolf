@@ -17,8 +17,6 @@ public:
 		Location = location;
 	}
 
-	
-
 	//Check the edges of the sphere
 	void CheckCollisions() override
 	{
