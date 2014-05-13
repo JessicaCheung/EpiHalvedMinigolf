@@ -7,26 +7,63 @@ class PhysicsObject
 public:
 	bool RayPlaneCollision(glm::vec3 rayposition, glm::vec3 raydirection, const Tile &tile, double &collisiondistance)
 	{
+		//double raything = glm::dot((rayposition - tile.Location), tile.Normal);
+		//double raydirnormal = glm::dot(raydirection, tile.Normal);
+		//
+		//double d = -(raything / raydirnormal);
+
+		//Check if they're parallel
+		double parallel = glm::dot(tile.Normal, raydirection);
+		
+		if (parallel != 0.0)
+		{
+			//Distance to intersection
+			collisiondistance = glm::dot(tile.Normal, (rayposition - raydirection)) / parallel;
+			if (collisiondistance >= 0)
+			{
+				//Find intersection point
+				glm::vec3 intersectionpoint = rayposition + (raydirection * static_cast<float>(collisiondistance));
+
+				return true;
+			}
+		}
+
+		return false;
+		//
+		//return false;
+		//double denominator = glm::dot(tile.Normal, raydirection);
+		//
+		//if (denominator > 1e-6)
+		//{
+		//	glm::vec3 planepositionrayorigin = tile.Location - rayposition;
+		//	double d = glm::dot(planepositionrayorigin, tile.Normal) / denominator;
+		//
+		//	//Found an intersection if >= 0
+		//	return (d >= 0);
+		//}
+		//
+		//return false;
+
 		//Get the dot product between the tile's normal and the ray's direction
-		double dotproduct = glm::dot(raydirection, tile.Normal);
-
-		double colldist;
-
-		//Check if it's parallel; a value of 0 indicates no collision
-		if (dotproduct < 0 && dotproduct >= 0)
-			return false;
-
-		glm::vec3 subtractvector = tile.Location - rayposition;
-
-		//Find the distance to the collision point
-		colldist = glm::dot(tile.Normal, subtractvector) / dotproduct;
-
-		//Check if the collision is behind the start
-		if (colldist <= 0)
-			return false;
-
-		collisiondistance = colldist;
-		return true;
+		//double dotproduct = glm::dot(raydirection, tile.Normal);
+		//
+		//double colldist;
+		//
+		////Check if it's parallel; a value of 0 indicates no collision
+		//if (dotproduct == 0)//dotproduct < 0 && dotproduct >= 0)
+		//	return false;
+		//
+		////glm::vec3 subtractvector = tile.Location - rayposition;
+		//
+		////Find the distance to the collision point
+		//colldist = glm::dot(tile.Normal, rayposition) / dotproduct;
+		//
+		////Check if the collision is behind the start
+		//if (colldist < 0)
+		//	return false;
+		//
+		//collisiondistance = colldist;
+		//return true;
 	}
 
 	//The model to import
@@ -40,7 +77,7 @@ public:
 	glm::vec3 Direction;
 
 	//The velocity of the object
-	glm::vec3 Velocity;
+	float Velocity;
 
 	//The tile the object is on; if a tile isn't present where it's about to go, then that is a wall
 	Tile ObjectTile;
@@ -48,7 +85,8 @@ public:
 	//Default constructor
 	PhysicsObject()
 	{
-		Direction = Location = Velocity = glm::vec3(0, 0, 0);
+		Direction = Location = glm::vec3(0, 0, 0);
+		Velocity = 0.0f;
 		ObjectTile = NULL;
 		Model = NULL;
 	}
@@ -99,13 +137,13 @@ public:
 	{
 		vector<Tile> tiles = getTiles();
 
-		for (int i = 0; i < tiles.size(); i++)
-		{
-			//if (tiles[i])
-		}
+		//for (int i = 0; i < tiles.size(); i++)
+		//{
+		//	//if (tiles[i])
+		//}
 
 		//If there was no tile, stop and return null
-		Velocity = glm::vec3(0, 0, 0);
+		Velocity = 0.0f;
 		return NULL;
 	}
 
@@ -113,7 +151,12 @@ public:
 	void AddForce(glm::vec3 direction, float magnitude)
 	{
 		Direction = direction;
-		Velocity = direction * magnitude;
+		Velocity = magnitude;
+	}
+
+	void TeleportTo(glm::vec3 location)
+	{
+		Model.Coordinate = location;
 	}
 
 	void MoveTile(Tile tile)
@@ -121,34 +164,53 @@ public:
 		//Velocity is (.05, .05, -.05)
 		//Normal is (.5, 1, .5)
 		//Velocity should be (.025, .05, -.025)
-		Direction = tile.Normal;
-		//Model.Coordinate += (Velocity * tile.Normal);
+		
+		ObjectTile = tile;
+		cout << '\n' << tile.TileID << endl;
+		//Direction = tile.Normal;
+		
+
+		Model.Coordinate += (Velocity * Direction);
 	}
 
 	//Move the object
 	virtual void Move(vector<Tile> tiles)
 	{
+		vector<double> collisiondistances;
 		for (int i = 0; i < tiles.size(); i++)
 		{
-			double collisiondistance = -1.0;
-			double collisiondistancedown = -1.0;
+			collisiondistances.push_back(-1.0);
 
-			if ((RayPlaneCollision(Model.Coordinate, glm::vec3(Direction.x, -.5f, -.5f), tiles[i], collisiondistance) == true && collisiondistance >= .1 && collisiondistance <= .2))// || (RayPlaneCollision(Model.Coordinate, glm::vec3(0, 1, 0), tiles[i], collisiondistancedown) == true && collisiondistancedown >= 0))
+			if (RayPlaneCollision(Model.Coordinate, glm::vec3(0, -1, 0), tiles[i], collisiondistances[i]) == true)
 			{
-				MoveTile(tiles[i]);
-				break;
+				cout << '\n' << i << " " << tiles[i].TileID << endl;// << " " << collisiondistances[i] << endl;
+				cout << '\n' << collisiondistances[i] << endl;
+				Model.Coordinate += (Velocity * Direction);
 			}
 		}
 
-		Model.Coordinate += (Velocity * Direction);
+		//Check lowest collision distance
+		//int tileindex = LowestCollDist(collisiondistances);
+		//
+		//if (tileindex >= 0)
+		//	MoveTile(tiles[tileindex]);
+	}
 
-		/*if (Model != NULL)*/ //Model.Coordinate += (Velocity * Direction);
-		//if (Direction.y < 1) Model.Coordinate.y += (.05 * Direction.y);
-		//Model.Coordinate.x += Velocity.x * Direction.x;
-		//Model.Coordinate.z += Velocity.z * Direction.z;
-		//else Location += Velocity;
+	int LowestCollDist(vector<double> collisiondistances)
+	{
+		double lowestnum = INFINITY;
+		int index = -1;
 
-		//ReloadPosition();
+		for (int i = 0; i < collisiondistances.size(); i++)
+		{
+			if (collisiondistances[i] < lowestnum && collisiondistances[i] >= 0)
+			{
+				lowestnum = collisiondistances[i];
+				index = i;
+			}
+		}
+
+		return index;
 	}
 
 	//Move the object, passing a velocity in
@@ -157,7 +219,6 @@ public:
 		Model.Coordinate.x += newvelocity.x;
 		Model.Coordinate.y += newvelocity.y;
 		Model.Coordinate.z += newvelocity.z;
-		//ReloadPosition();
 	}
 
 	//Checks for collisions; pure virtual because each object can have a different shape, thus needing to raycast from different points

@@ -101,14 +101,14 @@ void initRendering(char** argv)
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	ReadMap("hole.01.db");
+	ReadMap("hole.02.db");
 	
 	ImportObj temp;
 	ImportObj Tee = getTeeBuffer();
 	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
 	temp.CalculateNormals();
 	GolfBall = Ball(temp, Tee.Coordinate);
-	GolfBall.AddForce(glm::vec3(.5, 0, -.5), .01);
+	GolfBall.AddForce(glm::vec3(0, 0, -1), .01);
 	//ReadMap("testcourse3.db");
 	setShaders();
 
@@ -276,6 +276,15 @@ void handleKeyboard(unsigned char key, int x, int y)
 		break;
 	case 107:
 		GolfBall.Move(glm::vec3(0, 0, 0.1));
+		break;
+	case 'n':
+		GolfBall.Move(glm::vec3(0, .1, 0));
+		break;
+	case 'm':
+		GolfBall.Move(glm::vec3(0, -.1, 0));
+		break;
+	case 'r':
+		GolfBall.TeleportTo(glm::vec3(getTeeBuffer().Coordinate.x + 1.0f, GolfBall.Model.Coordinate.y, getTeeBuffer().Coordinate.z - 1.5f));
 		break;
 	}
 }
