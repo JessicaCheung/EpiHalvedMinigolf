@@ -16,8 +16,8 @@ float  rotateVal[3] = { 0 };		// Current rotation values
 float scaleVal[3] = { 1.0f, 1.0f, 1.0f };		//Current scale values
 int    mouse_x, mouse_y;		// Current mouse position
 
-GLuint buffer[12];
-GLuint vao[4];
+GLuint buffer[16];
+GLuint vao[5];
 GLuint ModelView, Projection;
 glm::mat4 model_view;
 GLuint shadertemp;
@@ -109,6 +109,7 @@ void initRendering(char** argv)
 	temp.CalculateNormals();
 	GolfBall = Ball(temp, Tee.Coordinate);
 	GolfBall.AddForce(glm::vec3(0, 0, -1), .01);
+	//GolfBall.ObjectTile = getTiles()[Tee.TileID - 1];
 	//ReadMap("testcourse3.db");
 	setShaders();
 
@@ -119,6 +120,7 @@ void setShaders()
 	MapObject Tiles = getTileBuffer();
 	ImportObj Tee = getTeeBuffer();
 	ImportObj Cup = getCupBuffer();
+	ImportObj Walls = getWallsBuffer();
 	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
 	shadertemp = program;
 	glUseProgram(program);
@@ -147,13 +149,11 @@ void setShaders()
 	ModelView = glGetUniformLocation(program, "ModelView");
 	Projection = glGetUniformLocation(program, "Projection");
 
-	glGenBuffers(12, buffer);
-	glGenVertexArrays(4, vao);
+	glGenBuffers(16, buffer);
+	glGenVertexArrays(5, vao);
 
 	//Vertex binding (Tiles)
 	glBindVertexArray(vao[0]);
-	/*glm::vec4 greenColor(0.0f, 1.0f, 0.0f, 1.0);
-	glUniform4fv(glGetUniformLocation(program, "MatColor"), 1, (GLfloat*)&greenColor);*/
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
 	glBufferData(GL_ARRAY_BUFFER, Tiles.Vertices.size() * sizeof(glm::vec3), Tiles.Vertices.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
@@ -173,8 +173,6 @@ void setShaders()
 
 	//Vertex binding (Tee)
 	glBindVertexArray(vao[1]);
-	glm::vec4 whiteColor(1.0f, 1.0f, 1.0f, 1.0);
-	glUniform4fv(glGetUniformLocation(program, "MatColor"), 1, (GLfloat*)&whiteColor);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
 	glBufferData(GL_ARRAY_BUFFER, Tee.Vertices.size() * sizeof(glm::vec3), Tee.Vertices.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
@@ -213,8 +211,6 @@ void setShaders()
 
 	//Vertex binding (ball)
 	glBindVertexArray(vao[3]);
-	//glm::vec4 whiteColor(1.0f, 1.0f, 1.0f, 1.0);
-	glUniform4fv(glGetUniformLocation(program, "MatColor"), 1, (GLfloat*)&whiteColor);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[9]);
 	glBufferData(GL_ARRAY_BUFFER, GolfBall.Model.Vertices.size() * sizeof(glm::vec3), GolfBall.Model.Vertices.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[10]);
@@ -229,6 +225,25 @@ void setShaders()
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[9]);
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[10]);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(0);
+
+	//Vertex binding (Walls)
+	glBindVertexArray(vao[4]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[12]);
+	glBufferData(GL_ARRAY_BUFFER, Walls.Vertices.size() * sizeof(glm::vec3), Walls.Vertices.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[13]);
+	glBufferData(GL_ARRAY_BUFFER, Walls.Normals.size() * sizeof(glm::vec3), Walls.Normals.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[14]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Walls.Indices.size() * sizeof(GLuint), Walls.Indices.data(), GL_DYNAMIC_DRAW);
+	vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	vNormal = glGetAttribLocation(program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	//Set up vertex arrays
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[12]);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[13]);
 	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindVertexArray(0);
 }

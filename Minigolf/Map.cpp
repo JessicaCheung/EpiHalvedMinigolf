@@ -4,6 +4,7 @@ vector<Tile> Tiles;			//Our tiles
 MapObject TileBuffer;		//Tile buffer object
 ImportObj Tee;				//The tee
 ImportObj Cup;				//The cup
+ImportObj Walls;			//The walls
 
 //Read/parse file and render the map (tiles, tee, and cup)
 void ReadMap(string fileName)
@@ -14,6 +15,8 @@ void ReadMap(string fileName)
 	load_obj("Cup.obj", Cup.Vertices, Cup.Indices, glm::vec3(Cup.Coordinate.x, Cup.Coordinate.y - 0.05f, Cup.Coordinate.z));
 	Tee.CalculateNormals();
 	Cup.CalculateNormals();
+	BuildWalls(Tiles, Walls.Vertices, Walls.Indices);
+	Walls.CalculateNormals();
 }
 
 void RenderMap()
@@ -21,6 +24,7 @@ void RenderMap()
 	DisplayMap(0, TileBuffer.Indices.size());
 	//DisplayMap(1, Tee.Indices.size());
 	DisplayMap(2, Cup.Indices.size());
+	DisplayMap(4, Walls.Indices.size());
 }
 
 //Check if the file exists
@@ -144,7 +148,7 @@ void ParseTeeCup(vector<string> lines, ImportObj& obj)
 {
 	//Get the tile ID
 	int tileID = stoi(lines[1]);
-
+	obj.TileID = tileID;
 	glm::vec3 teecupcoordinates;
 
 	//Read in the coordinates for the tee/cup
@@ -260,6 +264,65 @@ void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>&
 	}
 }
 
+void BuildWalls(vector<Tile> tiles, vector<glm::vec3>& verts, vector<int>& inds)
+{
+	int neighborCount, k, index;
+	glm::vec3 temp;
+	vector<int> tempInd;
+	for (int i = 0; i < tiles.size(); i++)
+	{
+		neighborCount = count(tiles[i].Neighbors.begin(), tiles[i].Neighbors.end(), 0);
+		cout << "NC " << neighborCount << endl;
+		if (neighborCount > 0)
+		{
+			for (int j = 0; j < tiles[i].Neighbors.size(); j++)
+			{
+				if (tiles[i].Neighbors[j] == 0)
+				{
+					temp = tiles[i].Vertices[j];
+					verts.push_back(temp);
+					tempInd.push_back(verts.size() - 1);
+					verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
+					tempInd.push_back(verts.size() - 1);
+					if (j == tiles[i].Neighbors.size() - 1)
+					{
+						index = FindVectorVec3(verts, tiles[i].Vertices[0]);
+						if (index == -1)
+						{
+							temp = tiles[i].Vertices[0];
+							verts.push_back(temp);
+							tempInd.push_back(verts.size() - 1);
+							verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
+							tempInd.push_back(verts.size() - 1);
+						}
+						tempInd.push_back(index);
+						tempInd.push_back(index + 1);
+					}
+					else
+					{
+						temp = tiles[i].Vertices[j + 1];
+						verts.push_back(temp);
+						tempInd.push_back(verts.size() - 1);
+						verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
+						tempInd.push_back(verts.size() - 1);
+					}
+					inds.push_back(tempInd[0]);
+					inds.push_back(tempInd[1]);
+					inds.push_back(tempInd[2]);
+					inds.push_back(tempInd[1]);
+					inds.push_back(tempInd[2]);
+					inds.push_back(tempInd[3]);
+					tempInd.clear();
+				}
+			}
+		}
+	}
+	for (int m = 0; m < verts.size(); m++)
+	{
+		cout << verts[m].x << " " << verts[m].y << " " << verts[m].z << endl;
+	}
+}
+
 /*Display things on map*/
 void DisplayMap(int num, int size)
 {
@@ -293,6 +356,9 @@ void DisplayMap(int num, int size)
 		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&whiteColor);
 		glutPostRedisplay();
 		break;
+	case 4:
+		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&redColor);
+		break;
 	}
 	glBindVertexArray(vao[num]);
 	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, NULL);
@@ -312,6 +378,11 @@ ImportObj getTeeBuffer()
 ImportObj getCupBuffer()
 {
 	return Cup;
+}
+
+ImportObj getWallsBuffer()
+{
+	return Walls;
 }
 
 vector<Tile> getTiles()
