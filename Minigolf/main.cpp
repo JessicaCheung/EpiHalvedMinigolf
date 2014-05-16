@@ -281,8 +281,8 @@ void display()
 		at = glm::vec3(0.0f, 0.0f, 0.0f);
 		break;
 	case THIRDPOV:
-		eye = glm::vec3(GolfBall.Model.Coordinate.x, GolfBall.Model.Coordinate.y + 1.5f, GolfBall.Model.Coordinate.z + 2.0f);
-		at = GolfBall.Model.Coordinate;		
+		eye = glm::vec3(GolfBall.Model.Coordinate.x + 0.0f, GolfBall.Model.Coordinate.y + 0.4f, GolfBall.Model.Coordinate.z + 0.75f);
+		at = glm::vec3(GolfBall.Model.Coordinate.x + 0.0f, GolfBall.Model.Coordinate.y + 0.2f, GolfBall.Model.Coordinate.z);
 		break;
 	}
 	glm::vec3 up(0.0f, 1.0f, 0.0f);
@@ -463,10 +463,6 @@ void glutMouseWheel(int wheel, int direction, int x, int y)
 		}
 	}
 }
-
-	mouse_x = x;
-	mouse_y = glutGet(GLUT_WINDOW_HEIGHT) - y;
-}					// End routine handle_mouse
 
 GLuint* getVAO()
 {
