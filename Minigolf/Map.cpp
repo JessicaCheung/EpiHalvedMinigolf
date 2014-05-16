@@ -11,8 +11,9 @@ void ReadMap(string fileName)
 {
 	ReadFile(fileName);
 	BuildTiles(Tiles, TileBuffer.Vertices, TileBuffer.Normals, TileBuffer.Indices);
-	load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
-	load_obj("Cup.obj", Cup.Vertices, Cup.Indices, glm::vec3(Cup.Coordinate.x, Cup.Coordinate.y - 0.05f, Cup.Coordinate.z));
+	//load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y, Tee.Coordinate.z));
+	load_obj("BallSmall.obj", Tee.Vertices, Tee.Indices, glm::vec3(0, 0, 0));
+	load_obj("Cup.obj", Cup.Vertices, Cup.Indices, glm::vec3(Cup.Coordinate.x, Cup.Coordinate.y, Cup.Coordinate.z));
 	Tee.CalculateNormals();
 	Cup.CalculateNormals();
 	BuildWalls(Tiles, Walls.Vertices, Walls.Indices);
@@ -148,6 +149,7 @@ void ParseTeeCup(vector<string> lines, ImportObj& obj)
 {
 	//Get the tile ID
 	int tileID = stoi(lines[1]);
+	obj.TileID = tileID;
 	obj.TileID = tileID;
 	glm::vec3 teecupcoordinates;
 
