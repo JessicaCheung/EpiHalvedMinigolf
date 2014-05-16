@@ -15,6 +15,7 @@ public:
 	{
 		Model = sphere;
 		Location = location;
+		Model.Coordinate = Location;
 	}
 
 	//Check the edges of the sphere

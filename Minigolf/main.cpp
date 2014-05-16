@@ -23,15 +23,18 @@ glm::mat4 model_view;
 GLuint shadertemp;
 
 //Change in time after each clock tick
-const float deltaT = 50.0f;
+float deltaT = 0.0f;
 
 //Total game time
-float gameTime;
-float prevgameTime;
+float gameTime = 0.0f;
+float prevgameTime = 0.0f;
+
+//Run physics 60 frames per second
+const float fixedupdatetime = 50.0f;//1.0f / 60.0f;
 
 //Physics lag time; we need to see how many frames of physics simulations we need to go through to catch up
 //This ensures that the game behaves the same on any hardware
-float physicsLagTime;
+float physicsLagTime = 0.0f;
 
 //The golf ball (NOTE: This should be moved into Map later)
 Ball GolfBall;
@@ -40,22 +43,23 @@ Ball GolfBall;
 void Update()
 {
 	//Update gametime
-	//gameTime = currentdate (or something)
+	gameTime = glutGet(GLUT_ELAPSED_TIME);
 
-	//Check how much time has passed between clock ticks
-	physicsLagTime = (gameTime - prevgameTime);
+	//Check how much time has passed between clock ticks, in milliseconds
+	deltaT = (gameTime - prevgameTime);
+	physicsLagTime += deltaT;
 
 	//NOTE: TEMPORARY FOR NOW
 	GolfBall.Move(getTiles());
 
 	//See how many physics simulations we need to go through
 	//Ideally it should be 1, but this makes it so if there's lag anywhere, everything will still behave the same way
-	while (physicsLagTime > deltaT)
+	while (physicsLagTime > fixedupdatetime)
 	{
 		//Perform a physics simulation
 		GolfBall.Move(getTiles());
 
-		physicsLagTime -= deltaT;
+		physicsLagTime -= fixedupdatetime;
 	}
 
 	//Set the previous game time to the current game time
@@ -101,17 +105,21 @@ void initRendering(char** argv)
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	ReadMap("hole.02.db");
+	ReadMap("hole.01.db");
 	
 	ImportObj temp;
 	ImportObj Tee = getTeeBuffer();
-	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
+	//load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
+	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(0, 0, 0));
 	temp.CalculateNormals();
 	GolfBall = Ball(temp, Tee.Coordinate);
-	GolfBall.AddForce(glm::vec3(0, 0, -1), .01);
+	GolfBall.AddForce(glm::vec3(0, 0, .01));
+
+	//The starting tile is the tile of the Tee
+	GolfBall.ObjectTile = getTiles()[getTeeBuffer().TileID - 1];
+
 	//ReadMap("testcourse3.db");
 	setShaders();
-
 }
 
 void setShaders()
@@ -256,6 +264,7 @@ void display()
 
 	//Send it to the screen
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 void handleKeyboard(unsigned char key, int x, int y)
@@ -284,7 +293,13 @@ void handleKeyboard(unsigned char key, int x, int y)
 		GolfBall.Move(glm::vec3(0, -.1, 0));
 		break;
 	case 'r':
-		GolfBall.TeleportTo(glm::vec3(getTeeBuffer().Coordinate.x + 1.0f, GolfBall.Model.Coordinate.y, getTeeBuffer().Coordinate.z - 1.5f));
+		GolfBall.TeleportTo(glm::vec3(getTeeBuffer().Coordinate.x, GolfBall.Model.Coordinate.y, getTeeBuffer().Coordinate.z));
+		break;
+	case 't':
+		getTeeBuffer().PrintCoor();
+		break;
+	case 'c':
+		getCupBuffer().PrintCoor();
 		break;
 	}
 }
@@ -369,8 +384,6 @@ void handle_motion(int x, int y)
 
 	mouse_x = x;				// Update cursor position
 	mouse_y = y;
-
-	glutPostRedisplay();
 }					// End routine handle_motion
 
 
@@ -437,4 +450,9 @@ GLuint getModelView()
 glm::mat4 getmodel_view()
 {
 	return model_view;
+}
+
+void PrintVec3(glm::vec3 vector)
+{
+	cout << endl << vector.x << "," << vector.y << "," << vector.z << endl;
 }
