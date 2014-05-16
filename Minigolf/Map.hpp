@@ -146,8 +146,7 @@ public:
 
 			for (int j = i; j < i + 3; j++)
 			{
-				//Normals[Indices[j]] = glm::normalize(Normals[Indices[j]] + normal);
-				Normals[Indices[j]] = (Normals[Indices[j]] + normal);
+				Normals[Indices[j]] = glm::normalize(Normals[Indices[j]] + normal);
 			}
 		}
 	}

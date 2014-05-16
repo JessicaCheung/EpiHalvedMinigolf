@@ -24,6 +24,7 @@ void handleResize(int w, int h);
 void handle_menu(int ID);
 void handle_motion(int x, int y);
 void handle_mouse(int b, int s, int x, int y);
+void glutMouseWheel(int wheel, int direction, int x, int y);
 GLuint* getVAO();
 GLuint getShader();
 glm::vec3 getNewCoor();

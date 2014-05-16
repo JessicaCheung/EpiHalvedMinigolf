@@ -9,12 +9,20 @@ typedef enum {
 	SCALE
 } mode;
 
+typedef enum {
+	TOPVIEW,
+	FREELOOK,
+	THIRDPOV
+} camera;
+
+
 int    btn[3] = { 0 };		// Current button state
 mode   cur_mode = TRANSLATE;		// Current mouse mode
 float  translate[3] = { 0 };		// Current translation values
 float  rotateVal[3] = { 0 };		// Current rotation values
 float scaleVal[3] = { 1.0f, 1.0f, 1.0f };		//Current scale values
 int    mouse_x, mouse_y;		// Current mouse position
+camera cameraView = FREELOOK;
 
 GLuint buffer[16];
 GLuint vao[5];
@@ -78,6 +86,7 @@ int main(int argc, char** argv)
 	glutReshapeFunc(handleResize);
 	glutMotionFunc(handle_motion);
 	glutMouseFunc(handle_mouse);
+	glutMouseWheelFunc(glutMouseWheel);
 
 	glutCreateMenu(handle_menu);	// Setup GLUT popup menu
 	glutAddMenuEntry("Translate", 0);
@@ -101,7 +110,7 @@ void initRendering(char** argv)
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	ReadMap("hole.02.db");
+	ReadMap("hole.01.db");
 	
 	ImportObj temp;
 	ImportObj Tee = getTeeBuffer();
@@ -109,7 +118,7 @@ void initRendering(char** argv)
 	temp.CalculateNormals();
 	GolfBall = Ball(temp, Tee.Coordinate);
 	GolfBall.AddForce(glm::vec3(0, 0, -1), .01);
-	//GolfBall.ObjectTile = getTiles()[Tee.TileID - 1];
+	GolfBall.ObjectTile = getTiles()[Tee.TileID - 1];
 	//ReadMap("testcourse3.db");
 	setShaders();
 
@@ -252,9 +261,23 @@ void display()
 {
 	//Clear screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glm::vec3 at(0.0f, 0.0f, 0.0f);
 	glm::vec3 eye(0.0f, 5.0f, 5.0f);
+	glm::vec3 at(0.0f, 0.0f, 0.0f);
+	switch (cameraView)
+	{
+	case TOPVIEW:
+		eye = glm::vec3(0.0f, 10.0f, 0.01f);
+		at = glm::vec3(0.0f, 0.0f, 0.0f);
+		break;
+	case FREELOOK:
+		eye = glm::vec3(0.0f, 5.0f, 5.0f);
+		at = glm::vec3(0.0f, 0.0f, 0.0f);
+		break;
+	case THIRDPOV:
+		eye = glm::vec3(GolfBall.Model.Coordinate.x, GolfBall.Model.Coordinate.y + 1.5f, GolfBall.Model.Coordinate.z + 2.0f);
+		at = GolfBall.Model.Coordinate;		
+		break;
+	}
 	glm::vec3 up(0.0f, 1.0f, 0.0f);
 	model_view = glm::lookAt(eye, at, up) *
 		glm::scale(glm::vec3(scaleVal[0], scaleVal[1], scaleVal[2])) *			//Scale
@@ -280,16 +303,16 @@ void handleKeyboard(unsigned char key, int x, int y)
 	case 033:
 		exit(EXIT_SUCCESS);
 		break;
-	case 105:
+	case 'w':
 		GolfBall.Move(glm::vec3(0, 0, -0.1));
 		break;
-	case 106:
+	case 'a':
 		GolfBall.Move(glm::vec3(-0.1, 0, 0));
 		break;
-	case 108:
+	case 'd':
 		GolfBall.Move(glm::vec3(0.1, 0, 0));
 		break;
-	case 107:
+	case 's':
 		GolfBall.Move(glm::vec3(0, 0, 0.1));
 		break;
 	case 'n':
@@ -300,6 +323,15 @@ void handleKeyboard(unsigned char key, int x, int y)
 		break;
 	case 'r':
 		GolfBall.TeleportTo(glm::vec3(getTeeBuffer().Coordinate.x + 1.0f, GolfBall.Model.Coordinate.y, getTeeBuffer().Coordinate.z - 1.5f));
+		break;
+	case 't':		//Top view
+		cameraView = TOPVIEW;
+		break;
+	case 'f':		//Free look
+		cameraView = FREELOOK;
+		break;
+	case 'g':		//Third Person View
+		cameraView = THIRDPOV;
 		break;
 	}
 }
@@ -399,35 +431,33 @@ void handle_mouse(int b, int s, int x, int y)
 {
 	if (s == GLUT_DOWN) {		// Store button state if mouse down
 		btn[b] = 1;
-		switch (b)
-		{
-		case GLUT_LEFT_BUTTON:
-			if (cur_mode == SCALE)
-			{
-				scaleVal[0] -= 0.1f;
-				scaleVal[1] -= 0.1f;
-				scaleVal[2] -= 0.1f;
-
-			}
-			break;
-		case GLUT_MIDDLE_BUTTON:
-			if (cur_mode == SCALE)
-			{
-				scaleVal[0] += 0.1f;
-				scaleVal[1] += 0.1f;
-				scaleVal[2] += 0.1f;
-			}
-		}
-
-
 	}
 	else {
 		btn[b] = 0;
 	}
-
 	mouse_x = x;
 	mouse_y = glutGet(GLUT_WINDOW_HEIGHT) - y;
 }					// End routine handle_mouse
+
+void glutMouseWheel(int wheel, int direction, int x, int y)
+{
+	if (direction != 0)
+	{
+		if (direction < 0 && cur_mode == SCALE)		//Down
+		{
+			scaleVal[0] -= 0.1f;
+			scaleVal[1] -= 0.1f;
+			scaleVal[2] -= 0.1f;
+		}
+		else if (cur_mode == SCALE)
+		{
+			scaleVal[0] += 0.1f;
+			scaleVal[1] += 0.1f;
+			scaleVal[2] += 0.1f;
+		}
+	}
+}
+
 
 GLuint* getVAO()
 {

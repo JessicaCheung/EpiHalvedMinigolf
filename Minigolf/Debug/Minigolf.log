@@ -1,7 +1,7 @@
-﻿Build started 5/15/2014 2:22:41 PM.
+﻿Build started 5/16/2014 1:42:25 AM.
      1>Project "C:\Users\Empresswrath\Documents\Minigolf\Minigolf\Minigolf.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\OpenGL\glew-1.10.0\include" /IC:\OpenGL\glm /IC:\OpenGL\freeglut\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\OpenGL\glew-1.10.0\include" /IC:\OpenGL\glm /IC:\OpenGL\freeglut\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Ball.hpp main.cpp
          main.cpp
      1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(43): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(54): warning C4018: '<' : signed/unsigned mismatch
@@ -19,15 +19,37 @@
      1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(95): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
      1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(126): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(136): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(205): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(204): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\empresswrath\documents\minigolf\minigolf\mathhelper.hpp(9): warning C4094: untagged 'class' declared no symbols
      1>c:\users\empresswrath\documents\minigolf\minigolf\physicsobject.hpp(180): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\empresswrath\documents\minigolf\minigolf\physicsobject.hpp(204): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(111): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(359): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(360): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(120): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(391): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(392): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
          GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         Ball.hpp
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(43): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(54): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(64): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(74): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(76): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(78): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(79): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(80): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(89): warning C4056: overflow in floating-point constant arithmetic
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(89): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(91): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(93): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(94): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(95): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(126): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(136): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(204): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\mathhelper.hpp(9): warning C4094: untagged 'class' declared no symbols
+     1>c:\users\empresswrath\documents\minigolf\minigolf\physicsobject.hpp(180): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\empresswrath\documents\minigolf\minigolf\physicsobject.hpp(204): warning C4018: '<' : signed/unsigned mismatch
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\OpenGL\glew-1.10.0\lib\Release\Win32" /LIBPATH:C:\OpenGL\freeglut\lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.lib" /MACHINE:X86 Debug\Ball.obj
          Debug\InitShader.obj
@@ -40,4 +62,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.41
+Time Elapsed 00:00:02.89

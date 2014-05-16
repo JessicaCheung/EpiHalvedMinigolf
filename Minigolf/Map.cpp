@@ -280,10 +280,19 @@ void BuildWalls(vector<Tile> tiles, vector<glm::vec3>& verts, vector<int>& inds)
 				if (tiles[i].Neighbors[j] == 0)
 				{
 					temp = tiles[i].Vertices[j];
-					verts.push_back(temp);
-					tempInd.push_back(verts.size() - 1);
-					verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
-					tempInd.push_back(verts.size() - 1);
+					index = FindVectorVec3(verts, temp);
+					if (index == -1)
+					{
+						verts.push_back(temp);
+						tempInd.push_back(verts.size() - 1);
+						verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
+						tempInd.push_back(verts.size() - 1);
+					}
+					else
+					{
+						tempInd.push_back(index);
+						tempInd.push_back(index + 1);
+					}
 					if (j == tiles[i].Neighbors.size() - 1)
 					{
 						index = FindVectorVec3(verts, tiles[i].Vertices[0]);
@@ -295,16 +304,28 @@ void BuildWalls(vector<Tile> tiles, vector<glm::vec3>& verts, vector<int>& inds)
 							verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
 							tempInd.push_back(verts.size() - 1);
 						}
-						tempInd.push_back(index);
-						tempInd.push_back(index + 1);
+						else
+						{
+							tempInd.push_back(index);
+							tempInd.push_back(index + 1);
+						}
 					}
 					else
 					{
 						temp = tiles[i].Vertices[j + 1];
-						verts.push_back(temp);
-						tempInd.push_back(verts.size() - 1);
-						verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
-						tempInd.push_back(verts.size() - 1);
+						index = FindVectorVec3(verts, temp);
+						if (index == -1)
+						{
+							verts.push_back(temp);
+							tempInd.push_back(verts.size() - 1);
+							verts.push_back(glm::vec3(temp.x, temp.y + 0.2f, temp.z));
+							tempInd.push_back(verts.size() - 1);
+						}
+						else
+						{
+							tempInd.push_back(index);
+							tempInd.push_back(index + 1);
+						}
 					}
 					inds.push_back(tempInd[0]);
 					inds.push_back(tempInd[1]);
