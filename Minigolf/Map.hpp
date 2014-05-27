@@ -1,3 +1,4 @@
+#pragma once
 #include "main.hpp"
 
 class MapObject
@@ -249,4 +250,5 @@ MapObject getTileBuffer();
 ImportObj getTeeBuffer();
 ImportObj getCupBuffer();
 ImportObj getWallsBuffer();
+ImportObj getPointer();
 vector<Tile> getTiles();

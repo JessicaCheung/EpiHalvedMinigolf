@@ -13,6 +13,9 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#define _USE_MATH_DEFINES
+#define PI 3.141592653589793238463
+#define MU 0.005f
 using namespace std;
 
 void initRendering(char** argv);
@@ -30,3 +33,4 @@ GLuint getShader();
 glm::vec3 getNewCoor();
 GLuint getModelView();
 glm::mat4 getmodel_view();
+glm::vec2 getPointerBar();

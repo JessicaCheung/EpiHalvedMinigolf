@@ -83,7 +83,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Ball.hpp" />
     <ClCompile Include="InitShader.cpp" />
     <ClCompile Include="LoadShader.cpp" />
     <ClCompile Include="main.cpp" />
@@ -93,7 +92,6 @@
   <ItemGroup>
     <ClInclude Include="main.hpp" />
     <ClInclude Include="Map.hpp" />
-    <ClInclude Include="MathHelper.hpp" />
     <ClInclude Include="Physics.hpp" />
     <ClInclude Include="PhysicsObject.hpp" />
     <ClInclude Include="Ray.hpp" />

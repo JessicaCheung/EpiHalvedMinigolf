@@ -1,5 +1,5 @@
-//#include "PhysicsObject.hpp"
-#include "Ball.hpp"
+#include "Map.hpp"
+#include "Physics.hpp"
 
 typedef enum {
 	TRANSLATE,
@@ -23,9 +23,11 @@ float  rotateVal[3] = { 0 };		// Current rotation values
 float scaleVal[3] = { 1.0f, 1.0f, 1.0f };		//Current scale values
 int    mouse_x, mouse_y;		// Current mouse position
 camera cameraView = FREELOOK;
+float BallDirAngle = 180.0f;
+float GolfPower = 0.1f;
 
-GLuint buffer[16];
-GLuint vao[5];
+GLuint buffer[20];
+GLuint vao[6];
 GLuint ModelView, Projection;
 glm::mat4 model_view;
 GLuint shadertemp;
@@ -57,15 +59,19 @@ void Update()
 	deltaT = (gameTime - prevgameTime);
 	physicsLagTime += deltaT;
 
-	//NOTE: TEMPORARY FOR NOW
-	GolfBall.Move(getTiles());
-
 	//See how many physics simulations we need to go through
 	//Ideally it should be 1, but this makes it so if there's lag anywhere, everything will still behave the same way
 	while (physicsLagTime > fixedupdatetime)
 	{
 		//Perform a physics simulation
-		GolfBall.Move(getTiles());
+		MovePhysicsObject(GolfBall);
+		cout << GolfBall.Velocity.x << " " << GolfBall.Velocity.y << " " << GolfBall.Velocity.z << endl;
+		//DeceleratePhysicsObject(GolfBall);
+
+		int temp = FindCurrentTile(GolfBall, GolfBall.ObjectTile.TileID, getTiles());
+		GolfBall.ObjectTile = getTiles()[temp - 1];
+		/*cout << "Tile " << temp << " | " << getTiles()[temp - 1].Normal.x << " " <<
+			getTiles()[temp - 1].Normal.y << " " << getTiles()[temp - 1].Normal.z << endl;*/
 
 		physicsLagTime -= fixedupdatetime;
 	}
@@ -114,20 +120,15 @@ void initRendering(char** argv)
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	ReadMap("hole.01.db");
+	ReadMap("hole.02.db");
 	
 	ImportObj temp;
 	ImportObj Tee = getTeeBuffer();
-	//load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(Tee.Coordinate.x, Tee.Coordinate.y + 0.1f, Tee.Coordinate.z));
-	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(0, 0, 0));
+	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(0, 0.08, 0));
 	temp.CalculateNormals();
-	GolfBall = Ball(temp, Tee.Coordinate);
-	GolfBall.AddForce(glm::vec3(0, 0, .01));
-
+	GolfBall = Ball(temp, Tee.Coordinate, getTiles()[getTeeBuffer().TileID - 1]);
 	//The starting tile is the tile of the Tee
-	GolfBall.ObjectTile = getTiles()[getTeeBuffer().TileID - 1];
 
-	//ReadMap("testcourse3.db");
 	setShaders();
 }
 
@@ -137,6 +138,7 @@ void setShaders()
 	ImportObj Tee = getTeeBuffer();
 	ImportObj Cup = getCupBuffer();
 	ImportObj Walls = getWallsBuffer();
+	ImportObj Pointer = getPointer();
 	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
 	shadertemp = program;
 	glUseProgram(program);
@@ -165,8 +167,8 @@ void setShaders()
 	ModelView = glGetUniformLocation(program, "ModelView");
 	Projection = glGetUniformLocation(program, "Projection");
 
-	glGenBuffers(16, buffer);
-	glGenVertexArrays(5, vao);
+	glGenBuffers(20, buffer);
+	glGenVertexArrays(6, vao);
 
 	//Vertex binding (Tiles)
 	glBindVertexArray(vao[0]);
@@ -262,6 +264,25 @@ void setShaders()
 	glBindBuffer(GL_ARRAY_BUFFER, buffer[13]);
 	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindVertexArray(0);
+
+	//Vertex binding (Pointer)
+	glBindVertexArray(vao[5]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[15]);
+	glBufferData(GL_ARRAY_BUFFER, Pointer.Vertices.size() * sizeof(glm::vec3), Pointer.Vertices.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[16]);
+	glBufferData(GL_ARRAY_BUFFER, Pointer.Normals.size() * sizeof(glm::vec3), Pointer.Normals.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[17]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Pointer.Indices.size() * sizeof(GLuint), Pointer.Indices.data(), GL_DYNAMIC_DRAW);
+	vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	vNormal = glGetAttribLocation(program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	//Set up vertex arrays
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[15]);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[16]);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(0);
 }
 
 void display()
@@ -298,7 +319,6 @@ void display()
 	//Draw
 	RenderMap();
 	DisplayMap(3, GolfBall.Model.Indices.size());
-
 	//Send it to the screen
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -308,29 +328,36 @@ void handleKeyboard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-	case 033:
+	case 033:		//Escape
 		exit(EXIT_SUCCESS);
 		break;
-	case 'w':
-		GolfBall.Move(glm::vec3(0, 0, -0.1));
+	case 040:		//Space
+		HitBall(GolfBall, BallDirAngle, GolfPower);
 		break;
 	case 'a':
-		GolfBall.Move(glm::vec3(-0.1, 0, 0));
+		if (BallDirAngle <= 0.0)
+			BallDirAngle = 360.0f;
+		BallDirAngle -= 8.0f;
 		break;
 	case 'd':
-		GolfBall.Move(glm::vec3(0.1, 0, 0));
+		if (BallDirAngle >= 360.0)
+			BallDirAngle = 0.0f;
+		BallDirAngle += 8.0f;
+		cout << BallDirAngle << endl;
+
+		break;
+	case 'w':
+		GolfPower += 0.05f;
+		if (GolfPower >= 1.0)
+			GolfPower = 1.0f;
 		break;
 	case 's':
-		GolfBall.Move(glm::vec3(0, 0, 0.1));
-		break;
-	case 'n':
-		GolfBall.Move(glm::vec3(0, .1, 0));
-		break;
-	case 'm':
-		GolfBall.Move(glm::vec3(0, -.1, 0));
+		GolfPower -= 0.05f;
+		if (GolfPower <= 0.05)
+			GolfPower = 0.05;
 		break;
 	case 'r':
-		GolfBall.TeleportTo(glm::vec3(getTeeBuffer().Coordinate.x + 1.0f, GolfBall.Model.Coordinate.y, getTeeBuffer().Coordinate.z - 1.5f));
+		GolfBall.ReturnTo();
 		break;
 	case 't':		//Top view
 		cameraView = TOPVIEW;
@@ -340,6 +367,9 @@ void handleKeyboard(unsigned char key, int x, int y)
 		break;
 	case 'g':		//Third Person View
 		cameraView = THIRDPOV;
+		break;
+	case 'p':
+		GolfBall.Model.Coordinate.x = 1.5;
 		break;
 	}
 }
@@ -487,4 +517,9 @@ GLuint getModelView()
 glm::mat4 getmodel_view()
 {
 	return model_view;
+}
+
+glm::vec2 getPointerBar()
+{
+	return glm::vec2(BallDirAngle, GolfPower);
 }

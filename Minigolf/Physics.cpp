@@ -1,56 +1,93 @@
 #include "Physics.hpp"
 
-//This returns the tile or wall that the ray may collide with
-//bool RayPlaneCollision(glm::vec3 rayposition, glm::vec3 raydirection, const Tile &tile, double &collisiondistance)
-//{
-//	//Get the dot product between the tile's normal and the ray's direction
-//	double dotproduct = glm::dot(raydirection, tile.Normal);
-//
-//	double colldist;
-//
-//	//Check if it's parallel; a value of 0 indicates no collision
-//	if (dotproduct < 0 && dotproduct >= 0)
-//		return false;
-//
-//	glm::vec3 subtractvector = tile.Location - rayposition;
-//
-//	//Find the distance to the collision point
-//	colldist = glm::dot(tile.Normal, subtractvector) / dotproduct;
-//
-//	//Check if the collision is behind the start
-//	if (colldist <= 0)
-//		return false;
-//
-//	collisiondistance = colldist;
-//	return true;
-//}
+void HitBall(PhysicsObject &obj, float directionAngle, float power)
+{
+	float temp = directionAngle * PI / 180;
+	obj.Direction = glm::vec3(sin(temp), 0, cos(temp));
+	obj.AddForce(glm::vec3(power, 0, power));
+}
 
-//glm::vec3 GetMinPoints(vector<glm::vec3> vertices)
-//{
-//	int x, y, z;
-//	x = y = z = INFINITY;
-//
-//	for (int i = 0; i < vertices.size(); i++)
-//	{
-//		if (vertices[i].x < x) x = vertices[i].x;
-//		if (vertices[i].y < y) y = vertices[i].y;
-//		if (vertices[i].z < z) z = vertices[i].z;
-//	}
-//
-//	return glm::vec3(x, y, z);
-//}
-//
-//glm::vec3 GetMaxPoints(vector<glm::vec3> vertices)
-//{
-//	int x, y, z;
-//	x = y = z = -INFINITY;
-//
-//	for (int i = 0; i < vertices.size(); i++)
-//	{
-//		if (vertices[i].x > x) x = vertices[i].x;
-//		if (vertices[i].y > y) y = vertices[i].y;
-//		if (vertices[i].z > z) z = vertices[i].z;
-//	}
-//
-//	return glm::vec3(x, y, z);
-//}
+void MovePhysicsObject(PhysicsObject &obj)
+{	obj.Model.Coordinate.y = FindYPos(obj);
+	//cout << obj.Model.Coordinate.x << " " << obj.Model.Coordinate.y << " " << obj.Model.Coordinate.z << " | ";
+	obj.Model.Coordinate +=  obj.Velocity * obj.Direction;
+	//cout << obj.Model.Coordinate.x << " " << obj.Model.Coordinate.y << " " << obj.Model.Coordinate.z << endl;
+	obj.AddForce(-MU * obj.ObjectTile.Normal);
+}
+
+void DeceleratePhysicsObject(PhysicsObject &obj)
+{
+	float rate = 0.05;
+	if (obj.Velocity.x > 0.0)
+	{
+		obj.Velocity.x -= obj.Velocity.x * rate;
+	}
+	else
+	{
+		obj.Velocity.x = 0.0f;
+	}
+	if (obj.Velocity.y > 0.0)
+	{
+		obj.Velocity.y -= obj.Velocity.y * rate;
+	}
+	else
+	{
+		obj.Velocity.y = 0.0f;
+	}
+	if (obj.Velocity.z > 0.0)
+	{
+		obj.Velocity.z -= obj.Velocity.z * rate;
+	}
+	else
+	{
+		obj.Velocity.z = 0.0f;
+	}
+}
+
+int FindCurrentTile(PhysicsObject &obj, int originTile, vector<Tile> tiles)
+{
+	float sumTheta = 0.0f;
+	float temp;
+	for (int i = 0; i < tiles[originTile - 1].Neighbors.size(); i++)
+	{
+		temp = tiles[originTile - 1].Neighbors[i];
+		sumTheta = 0.0f;
+		if (temp != 0)
+		{
+			for (int j = 0; j < tiles[temp - 1].Vertices.size(); j++)
+			{
+				glm::vec3 A(tiles[temp - 1].Vertices[j] - obj.Model.Coordinate);
+				A.y = 0.0f;
+				glm::vec3 B(0, 0, 0);
+				if (j == tiles[temp - 1].Vertices.size() - 1)
+				{
+					B = glm::vec3(tiles[temp - 1].Vertices[0] - obj.Model.Coordinate);
+					B.y = 0.0f;
+				}
+				else
+				{
+					B = glm::vec3(tiles[temp - 1].Vertices[j + 1] - obj.Model.Coordinate);
+					B.y = 0.0f;
+				}
+				float theta = acos(glm::dot(A, B) / (glm::length(A) * glm::length(B)));
+				theta = theta * 180 / PI;
+				sumTheta += theta;
+			}
+			//cout << "neighbor" << temp << " | " << sumTheta << endl;
+		}
+		
+		if (sumTheta == 360.0f)
+		{
+ 			return temp;
+		}
+	}
+	return originTile;
+}
+
+float FindYPos(PhysicsObject &obj)
+{
+	float y = (glm::dot(obj.ObjectTile.Normal, obj.ObjectTile.Vertices[0]) - 
+		obj.ObjectTile.Normal.x * obj.Model.Coordinate.x -
+		obj.ObjectTile.Normal.z * obj.Model.Coordinate.z) / obj.ObjectTile.Normal.y;
+	return y;
+}
