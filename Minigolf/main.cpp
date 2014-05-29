@@ -25,6 +25,7 @@ int    mouse_x, mouse_y;		// Current mouse position
 camera cameraView = FREELOOK;
 float BallDirAngle = 180.0f;
 float GolfPower = 0.1f;
+float const powerIncrements = 0.025f;
 
 GLuint buffer[20];
 GLuint vao[6];
@@ -65,7 +66,8 @@ void Update()
 	{
 		//Perform a physics simulation
 		MovePhysicsObject(GolfBall);
-		cout << GolfBall.Velocity.x << " " << GolfBall.Velocity.y << " " << GolfBall.Velocity.z << endl;
+		WallCollision(GolfBall);
+		//cout << GolfBall.Velocity.x << " " << GolfBall.Velocity.y << " " << GolfBall.Velocity.z << endl;
 		//DeceleratePhysicsObject(GolfBall);
 
 		int temp = FindCurrentTile(GolfBall, GolfBall.ObjectTile.TileID, getTiles());
@@ -120,7 +122,7 @@ void initRendering(char** argv)
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	ReadMap("hole.02.db");
+	ReadMap("hole.01.db");
 	
 	ImportObj temp;
 	ImportObj Tee = getTeeBuffer();
@@ -343,18 +345,16 @@ void handleKeyboard(unsigned char key, int x, int y)
 		if (BallDirAngle >= 360.0)
 			BallDirAngle = 0.0f;
 		BallDirAngle += 8.0f;
-		cout << BallDirAngle << endl;
-
 		break;
 	case 'w':
-		GolfPower += 0.05f;
-		if (GolfPower >= 1.0)
-			GolfPower = 1.0f;
+		GolfPower += powerIncrements;
+		if (GolfPower >= 0.1)
+			GolfPower = 0.1f;
 		break;
 	case 's':
-		GolfPower -= 0.05f;
-		if (GolfPower <= 0.05)
-			GolfPower = 0.05;
+		GolfPower -= powerIncrements;
+		if (GolfPower <= 0.025)
+			GolfPower = 0.025;
 		break;
 	case 'r':
 		GolfBall.ReturnTo();

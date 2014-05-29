@@ -35,6 +35,11 @@ public:
 		Velocity += velocity;					//Direction * magnitude;
 	}
 
+	void NegativeForce()
+	{
+		Direction *= -1.0f;
+	}
+
 	void ReturnTo()
 	{
 		Model.Coordinate = Location;
