@@ -1,5 +1,6 @@
 #include "Map.hpp"
 #include "Physics.hpp"
+//#include "Hole.hpp"
 
 typedef enum {
 	TRANSLATE,
@@ -49,6 +50,10 @@ float physicsLagTime = 0.0f;
 
 //The golf ball (NOTE: This should be moved into Map later)
 Ball GolfBall;
+
+//The holes, or levels the player plays through
+//vector<Hole> Holes;
+int currentHole = 0;
 
 //The main update function
 void Update()
@@ -134,18 +139,8 @@ void initRendering(char** argv)
 	setShaders();
 }
 
-void setShaders()
+void setLighting(GLuint program)
 {
-	MapObject Tiles = getTileBuffer();
-	ImportObj Tee = getTeeBuffer();
-	ImportObj Cup = getCupBuffer();
-	ImportObj Walls = getWallsBuffer();
-	ImportObj Pointer = getPointer();
-	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
-	shadertemp = program;
-	glUseProgram(program);
-	GLuint vPosition, vNormal;
-
 	//Initialize shader lighting parameters
 	glm::vec4 light_position(0.0, 1.0, 0.0, 1.0);
 	glm::vec4 light_ambient(0.2, 0.2, 0.2, 1.0);
@@ -164,6 +159,22 @@ void setShaders()
 	glUniform4fv(glGetUniformLocation(program, "LightPosition"), 1, (GLfloat*)&light_position);
 	glUniform1f(glGetUniformLocation(program, "Shininess"), material_shininess);
 	//End lighting
+}
+
+void setShaders()
+{
+	MapObject Tiles = getTileBuffer();
+	ImportObj Tee = getTeeBuffer();
+	ImportObj Cup = getCupBuffer();
+	ImportObj Walls = getWallsBuffer();
+	ImportObj Pointer = getPointer();
+	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
+	shadertemp = program;
+	glUseProgram(program);
+	GLuint vPosition, vNormal;
+
+	//Set lighting
+	setLighting(program);
 
 	// Retrieve transformation uniform variable locations
 	ModelView = glGetUniformLocation(program, "ModelView");

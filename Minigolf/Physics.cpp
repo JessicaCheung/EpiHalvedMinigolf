@@ -95,58 +95,21 @@ float FindYPos(PhysicsObject &obj)
 bool WallCollision(PhysicsObject &obj)
 {
 	ImportObj Walls = getWallsBuffer();
-	glm::vec3 pos(0, 0, 0), temp(0, 0, 0);
+	glm::vec3 pos(0, 0, 0), temp(0, 0, 0), norm(0, 0, 0);
 
 	for (int i = 0; i < Walls.Indices.size(); i += 3)
 	{
 		if (glm::intersectRayTriangle(obj.Model.Coordinate, obj.Direction,
 			Walls.Vertices[Walls.Indices[i]], Walls.Vertices[Walls.Indices[i + 1]], Walls.Vertices[Walls.Indices[i + 2]], pos))
 		{
-			/*cout << i << " " << obj.Direction.x << " " << obj.Direction.y << " " << obj.Direction.z << " | " 
-				<< dist << endl;*/
-			//cout << obj.Direction.x << " " << obj.Direction.y << " " << obj.Direction.z << " | " << 
-			//obj.Model.Coordinate.x << " " << obj.Model.Coordinate.y << " " << obj.Model.Coordinate.z << " " <<
-			cout << i << " " << glm::length(pos) - pos.y << " | " << pos.x << " " << pos.y << " " << pos.z << endl;
-			//if (dist >= 1.88f && dist < 2.0f)
 			if (glm::length(pos) - pos.y < 0.09f)
 			{
-				obj.NegativeForce();
+				glm::vec3 u = Walls.Vertices[Walls.Indices[i]] - Walls.Vertices[Walls.Indices[i + 1]];
+				glm::vec3 v = Walls.Vertices[Walls.Indices[i]] - Walls.Vertices[Walls.Indices[i + 2]];
+				norm = glm::normalize(glm::cross(u, v));
+				obj.Direction = obj.Direction - (2.0f * norm * glm::dot(obj.Direction, norm));
 			}
 		}
 	}
 	return false;
 }
-
-	//if (glm::intersectRayTriangle(obj.Model.Coordinate, obj.Direction,
-	//	Walls.Vertices[Walls.Indices[0]], Walls.Vertices[Walls.Indices[1]], Walls.Vertices[Walls.Indices[2]], pos))
-	//{
-	//	dist = glm::distance(obj.Model.Coordinate, pos);
-	//	cout << "1 " << "dist " << dist << endl;
-	//	if (dist >= 2.0f)
-	//	{
-	//		cout << "1" << endl;
-	//		return true;
-	//	}
-	//}
-	//if (glm::intersectRayTriangle(obj.Model.Coordinate, obj.Direction,
-	//	Walls.Vertices[Walls.Indices[3]], Walls.Vertices[Walls.Indices[4]], Walls.Vertices[Walls.Indices[5]], pos))
-	//{
-	//	dist = glm::distance(obj.Model.Coordinate, pos);
-	//	cout << "2 " << "dist " << dist << endl;
-	//	if (dist >= 2.0f)
-	//	{
-	//		cout << "2" << endl;
-	//		return true;
-	//	}
-	//}
-	//if (glm::intersectRayTriangle(obj.Model.Coordinate, obj.Direction,
-	//	Walls.Vertices[Walls.Indices[6]], Walls.Vertices[Walls.Indices[7]], Walls.Vertices[Walls.Indices[8]], pos))
-	//{
-	//	dist = glm::distance(obj.Model.Coordinate, pos);
-	//	cout << "3 " << "dist " << dist << endl;
-	//	if (dist >= 2.0f)
-	//	{
-	//		cout << "3" << endl;
-	//		return true;
-	//	}
-	//}

@@ -77,10 +77,10 @@ void DisplayMap(int num, int size)
 	case 5:
 		glm::vec2 pointerDirPower = getPointerBar();		//x is Direction in degrees, y is power
 		newCoor = getNewCoor();
-		newCoor.y += 0.105;
+		newCoor.y += 0.185;
 		model_view *= glm::translate(newCoor)
-			* glm::rotate(pointerDirPower.x + 90, glm::vec3(0, 1, 0))
-			* glm::scale(glm::vec3(pointerDirPower.y, 1.0f, 1.0f));
+			* glm::rotate(pointerDirPower.x + 90, glm::vec3(0, 1, 0));
+			//* glm::scale(glm::vec3(pointerDirPower.y, 1.0f, 1.0f));
 		glUniformMatrix4fv(ModelView, 1, GL_FALSE, glm::value_ptr(model_view));
 		glUniform4fv(glGetUniformLocation(shader, "MatColor"), 1, (GLfloat*)&blackColor);
 		glutPostRedisplay();
@@ -148,11 +148,6 @@ void ParseLine(vector<string> lines)
 	{
 		ParseTeeCup(lines, Cup);
 	}
-	//else 
-	//{
-	//	cout << "\n" << "Invalid Input!" << endl;
-	//	exit(1);
-	//}
 }
 
 

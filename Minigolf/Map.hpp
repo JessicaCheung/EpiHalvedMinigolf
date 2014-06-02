@@ -160,6 +160,12 @@ public:
 			cout << Coordinate[i] << ", ";
 		cout << endl;
 	}
+
+	//Renders the import object
+	void Render()
+	{
+
+	}
 };
 
 class Tile : public MapObject

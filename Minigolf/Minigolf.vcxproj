@@ -87,11 +87,14 @@
     <ClCompile Include="LoadShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MapReader.cpp" />
     <ClCompile Include="Physics.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hole.hpp" />
     <ClInclude Include="main.hpp" />
     <ClInclude Include="Map.hpp" />
+    <ClInclude Include="MapReader.hpp" />
     <ClInclude Include="Physics.hpp" />
     <ClInclude Include="PhysicsObject.hpp" />
     <ClInclude Include="Ray.hpp" />
