@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <sstream>
 #include <stdlib.h>
+#include <stdio.h>
 #include <GL/glew.h>
 #include <gl/glut.h>
 #include <gl/freeglut.h>
@@ -15,14 +16,15 @@
 #include <vector>
 #include <math.h>
 #define _USE_MATH_DEFINES
-#define PI 3.141592653589793238463
-#define MU 0.005f
+#define PI 3.141592653589793238463f
+#define MU -0.003f
 using namespace std;
 
 void initRendering(char** argv);
 void setShaders();
 void Update();
 void display();
+void drawGUIText(char* s, int x, int y);
 void handleKeyboard(unsigned char key, int x, int y);
 void handleResize(int w, int h);
 void handle_menu(int ID);

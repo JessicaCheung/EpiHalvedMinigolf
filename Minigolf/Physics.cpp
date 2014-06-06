@@ -4,44 +4,15 @@ void HitBall(PhysicsObject &obj, float directionAngle, float power)
 {
 	float temp = directionAngle * PI / 180;
 	obj.Direction = glm::vec3(sin(temp), 0, cos(temp));
-	obj.AddForce(glm::vec3(power, 0, power));
+	obj.AddForce(glm::vec3(power, power, power));
 }
 
 void MovePhysicsObject(PhysicsObject &obj)
 {	obj.Model.Coordinate.y = FindYPos(obj);
-	//cout << obj.Model.Coordinate.x << " " << obj.Model.Coordinate.y << " " << obj.Model.Coordinate.z << " | ";
-	obj.Model.Coordinate +=  obj.Velocity * obj.Direction;
-	//cout << obj.Model.Coordinate.x << " " << obj.Model.Coordinate.y << " " << obj.Model.Coordinate.z << endl;
-	//obj.AddForce(-MU * obj.ObjectTile.Normal);
-}
-
-void DeceleratePhysicsObject(PhysicsObject &obj)
-{
-	float rate = 0.05;
-	if (obj.Velocity.x > 0.0)
-	{
-		obj.Velocity.x -= obj.Velocity.x * rate;
-	}
-	else
-	{
-		obj.Velocity.x = 0.0f;
-	}
-	if (obj.Velocity.y > 0.0)
-	{
-		obj.Velocity.y -= obj.Velocity.y * rate;
-	}
-	else
-	{
-		obj.Velocity.y = 0.0f;
-	}
-	if (obj.Velocity.z > 0.0)
-	{
-		obj.Velocity.z -= obj.Velocity.z * rate;
-	}
-	else
-	{
-		obj.Velocity.z = 0.0f;
-	}
+	obj.Model.Coordinate += glm::length(obj.Velocity) * obj.Direction;
+	obj.AddForce(glm::abs(obj.Velocity - obj.ObjectTile.Normal) * MU );
+	obj.VelocityZero();
+	cout << obj.Velocity.x << " " << obj.Velocity.y << " " << obj.Velocity.z << endl;
 }
 
 int FindCurrentTile(PhysicsObject &obj, int originTile, vector<Tile> tiles)
@@ -58,7 +29,7 @@ int FindCurrentTile(PhysicsObject &obj, int originTile, vector<Tile> tiles)
 			{
 				glm::vec3 A(tiles[temp - 1].Vertices[j] - obj.Model.Coordinate);
 				A.y = 0.0f;
-				glm::vec3 B(0, 0, 0);
+				glm::vec3 B(0.0f, 0.0f, 0.0f);
 				if (j == tiles[temp - 1].Vertices.size() - 1)
 				{
 					B = glm::vec3(tiles[temp - 1].Vertices[0] - obj.Model.Coordinate);
@@ -70,15 +41,13 @@ int FindCurrentTile(PhysicsObject &obj, int originTile, vector<Tile> tiles)
 					B.y = 0.0f;
 				}
 				float theta = acos(glm::dot(A, B) / (glm::length(A) * glm::length(B)));
-				theta = theta * 180 / PI;
+				theta = theta * 180.0f / PI;
 				sumTheta += theta;
 			}
-			//cout << "neighbor" << temp << " | " << sumTheta << endl;
-		}
-		
-		if (sumTheta == 360.0f)
-		{
- 			return temp;
+			if (fabs(sumTheta - 356.0f) < 4.001)
+			{
+				return temp;
+			}
 		}
 	}
 	return originTile;
@@ -102,7 +71,7 @@ bool WallCollision(PhysicsObject &obj)
 		if (glm::intersectRayTriangle(obj.Model.Coordinate, obj.Direction,
 			Walls.Vertices[Walls.Indices[i]], Walls.Vertices[Walls.Indices[i + 1]], Walls.Vertices[Walls.Indices[i + 2]], pos))
 		{
-			if (glm::length(pos) - pos.y < 0.09f)
+			if (glm::length(pos) - pos.y < 0.02f)
 			{
 				glm::vec3 u = Walls.Vertices[Walls.Indices[i]] - Walls.Vertices[Walls.Indices[i + 1]];
 				glm::vec3 v = Walls.Vertices[Walls.Indices[i]] - Walls.Vertices[Walls.Indices[i + 2]];

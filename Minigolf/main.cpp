@@ -16,7 +16,8 @@ typedef enum {
 	THIRDPOV
 } camera;
 
-
+int const width = 800;
+int const height = 600;
 int    btn[3] = { 0 };		// Current button state
 mode   cur_mode = TRANSLATE;		// Current mouse mode
 float  translate[3] = { 0 };		// Current translation values
@@ -42,7 +43,7 @@ float gameTime = 0.0f;
 float prevgameTime = 0.0f;
 
 //Run physics 60 frames per second
-const float fixedupdatetime = 50.0f;//1.0f / 60.0f;
+const float fixedupdatetime = 40.0f;//1.0f / 60.0f;
 
 //Physics lag time; we need to see how many frames of physics simulations we need to go through to catch up
 //This ensures that the game behaves the same on any hardware
@@ -72,13 +73,9 @@ void Update()
 		//Perform a physics simulation
 		MovePhysicsObject(GolfBall);
 		WallCollision(GolfBall);
-		//cout << GolfBall.Velocity.x << " " << GolfBall.Velocity.y << " " << GolfBall.Velocity.z << endl;
-		//DeceleratePhysicsObject(GolfBall);
 
 		int temp = FindCurrentTile(GolfBall, GolfBall.ObjectTile.TileID, getTiles());
 		GolfBall.ObjectTile = getTiles()[temp - 1];
-		/*cout << "Tile " << temp << " | " << getTiles()[temp - 1].Normal.x << " " <<
-			getTiles()[temp - 1].Normal.y << " " << getTiles()[temp - 1].Normal.z << endl;*/
 
 		physicsLagTime -= fixedupdatetime;
 	}
@@ -91,7 +88,7 @@ int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(800, 600);
+	glutInitWindowSize(width, height);
 
 	glutCreateWindow("minigolf");
 	glewInit();
@@ -123,7 +120,7 @@ int main(int argc, char** argv)
 
 void initRendering(char** argv)
 {
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.678431, 0.847059, 0.901961, 1.0);
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
@@ -300,6 +297,7 @@ void setShaders()
 
 void display()
 {
+	char *string = "meep";
 	//Clear screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::vec3 eye(0.0f, 5.0f, 5.0f);
@@ -332,9 +330,34 @@ void display()
 	//Draw
 	RenderMap();
 	DisplayMap(3, GolfBall.Model.Indices.size());
+	drawGUIText("Score: ", 0, 580);
+	drawGUIText("Par: ", 0, 560);
+	drawGUIText("Shots: ", 0, 540);
+	drawGUIText("Power", 0, 500);
 	//Send it to the screen
 	glutSwapBuffers();
 	glutPostRedisplay();
+}
+
+void drawGUIText(char* s, int x, int y)
+{
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, width, 0.0, height);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glRasterPos2i(x, y);
+	void * font = GLUT_BITMAP_HELVETICA_18;
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glutBitmapString(font, (const unsigned char *) s);
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void handleKeyboard(unsigned char key, int x, int y)

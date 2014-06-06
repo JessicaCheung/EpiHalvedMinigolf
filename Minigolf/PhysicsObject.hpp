@@ -35,9 +35,14 @@ public:
 		Velocity += velocity;					//Direction * magnitude;
 	}
 
-	void NegativeForce()
+	void VelocityZero()
 	{
-		Direction *= -1.0f;
+		if (Velocity.x <= 0.0001f)
+			Velocity.x = 0.0f;
+		if (Velocity.y <= 0.0001f)
+			Velocity.y = 0.0f;
+		if (Velocity.z <= 0.0001f)
+			Velocity.z = 0.0f;
 	}
 
 	void ReturnTo()
