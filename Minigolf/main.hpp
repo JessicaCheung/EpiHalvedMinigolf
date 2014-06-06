@@ -21,6 +21,7 @@
 using namespace std;
 
 void initRendering(char** argv);
+void BindShader(GLuint vao, GLuint program, vector<glm::vec3> Vertices, vector<glm::vec3> Normals, vector<int> Indices);
 void setShaders();
 void Update();
 void display();

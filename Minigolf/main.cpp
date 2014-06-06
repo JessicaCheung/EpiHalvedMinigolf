@@ -29,7 +29,6 @@ float BallDirAngle = 180.0f;
 float GolfPower = 0.1f;
 float const powerIncrements = 0.025f;
 
-GLuint buffer[20];
 GLuint vao[6];
 GLuint ModelView, Projection;
 glm::mat4 model_view;
@@ -158,6 +157,32 @@ void setLighting(GLuint program)
 	//End lighting
 }
 
+void BindShader(GLuint vao, GLuint program, vector<glm::vec3> Vertices, vector<glm::vec3> Normals, vector<int> Indices)
+{
+	GLuint buffer[3];
+	glGenBuffers(3, buffer);
+	GLuint vPosition, vNormal;
+
+	//Vertex binding
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+	glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(glm::vec3), Vertices.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(glm::vec3), Normals.data(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[2]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(GLuint), Indices.data(), GL_DYNAMIC_DRAW);
+	vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	vNormal = glGetAttribLocation(program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	//Set up vertex arrays
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(0);
+}
+
 void setShaders()
 {
 	MapObject Tiles = getTileBuffer();
@@ -177,122 +202,14 @@ void setShaders()
 	ModelView = glGetUniformLocation(program, "ModelView");
 	Projection = glGetUniformLocation(program, "Projection");
 
-	glGenBuffers(20, buffer);
 	glGenVertexArrays(6, vao);
 
-	//Vertex binding (Tiles)
-	glBindVertexArray(vao[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-	glBufferData(GL_ARRAY_BUFFER, Tiles.Vertices.size() * sizeof(glm::vec3), Tiles.Vertices.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
-	glBufferData(GL_ARRAY_BUFFER, Tiles.Normals.size() * sizeof(glm::vec3), Tiles.Normals.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[2]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Tiles.Indices.size() * sizeof(GLuint), Tiles.Indices.data(), GL_DYNAMIC_DRAW);
-	vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	//Set up vertex arrays
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindVertexArray(0);
-
-	//Vertex binding (Tee)
-	glBindVertexArray(vao[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
-	glBufferData(GL_ARRAY_BUFFER, Tee.Vertices.size() * sizeof(glm::vec3), Tee.Vertices.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
-	glBufferData(GL_ARRAY_BUFFER, Tee.Normals.size() * sizeof(glm::vec3), Tee.Normals.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[5]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Tee.Indices.size() * sizeof(GLuint), Tee.Indices.data(), GL_DYNAMIC_DRAW);
-	vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	//Set up vertex arrays
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindVertexArray(0);
-
-	//Vertex binding (Cup)
-	glBindVertexArray(vao[2]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[6]);
-	glBufferData(GL_ARRAY_BUFFER, Cup.Vertices.size() * sizeof(glm::vec3), Cup.Vertices.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[7]);
-	glBufferData(GL_ARRAY_BUFFER, Cup.Normals.size() * sizeof(glm::vec3), Cup.Normals.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[8]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Cup.Indices.size() * sizeof(GLuint), Cup.Indices.data(), GL_DYNAMIC_DRAW);
-	vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	//Set up vertex arrays
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[6]);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[7]);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindVertexArray(0);
-
-	//Vertex binding (ball)
-	glBindVertexArray(vao[3]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[9]);
-	glBufferData(GL_ARRAY_BUFFER, GolfBall.Model.Vertices.size() * sizeof(glm::vec3), GolfBall.Model.Vertices.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[10]);
-	glBufferData(GL_ARRAY_BUFFER, GolfBall.Model.Normals.size() * sizeof(glm::vec3), GolfBall.Model.Normals.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[11]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, GolfBall.Model.Indices.size() * sizeof(GLuint), GolfBall.Model.Indices.data(), GL_DYNAMIC_DRAW);
-	vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	//Set up vertex arrays
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[9]);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[10]);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindVertexArray(0);
-
-	//Vertex binding (Walls)
-	glBindVertexArray(vao[4]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[12]);
-	glBufferData(GL_ARRAY_BUFFER, Walls.Vertices.size() * sizeof(glm::vec3), Walls.Vertices.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[13]);
-	glBufferData(GL_ARRAY_BUFFER, Walls.Normals.size() * sizeof(glm::vec3), Walls.Normals.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[14]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Walls.Indices.size() * sizeof(GLuint), Walls.Indices.data(), GL_DYNAMIC_DRAW);
-	vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	//Set up vertex arrays
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[12]);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[13]);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindVertexArray(0);
-
-	//Vertex binding (Pointer)
-	glBindVertexArray(vao[5]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[15]);
-	glBufferData(GL_ARRAY_BUFFER, Pointer.Vertices.size() * sizeof(glm::vec3), Pointer.Vertices.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[16]);
-	glBufferData(GL_ARRAY_BUFFER, Pointer.Normals.size() * sizeof(glm::vec3), Pointer.Normals.data(), GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[17]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Pointer.Indices.size() * sizeof(GLuint), Pointer.Indices.data(), GL_DYNAMIC_DRAW);
-	vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	//Set up vertex arrays
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[15]);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[16]);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindVertexArray(0);
+	BindShader(vao[0], program, Tiles.Vertices, Tiles.Normals, Tiles.Indices);
+	BindShader(vao[1], program, Tee.Vertices, Tee.Normals, Tee.Indices);
+	BindShader(vao[2], program, Cup.Vertices, Cup.Normals, Cup.Indices);
+	BindShader(vao[3], program, GolfBall.Model.Vertices, GolfBall.Model.Normals, GolfBall.Model.Indices);
+	BindShader(vao[4], program, Walls.Vertices, Walls.Normals, Walls.Indices);
+	BindShader(vao[5], program, Pointer.Vertices, Pointer.Normals, Pointer.Indices);
 }
 
 void display()
