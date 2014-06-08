@@ -1,47 +1,47 @@
-﻿Build started 6/6/2014 8:44:35 AM.
-     1>Project "C:\Users\Empresswrath\Documents\Minigolf\Minigolf\Minigolf.vcxproj" on node 2 (Build target(s)).
+﻿Build started 6/8/2014 1:32:18 PM.
+     1>Project "C:\Users\Thomas\Documents\GitHub\EpiHalvedMinigolf\Minigolf\Minigolf.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\OpenGL\glew-1.10.0\include" /IC:\OpenGL\glm /IC:\OpenGL\freeglut\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
-         main.cpp
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(44): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(55): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(65): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(75): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(77): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(79): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(80): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(81): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(90): warning C4056: overflow in floating-point constant arithmetic
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(90): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(92): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(94): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(95): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(96): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(127): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(137): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\map.hpp(211): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\empresswrath\documents\minigolf\minigolf\physicsobject.hpp(5): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(63): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(123): warning C4305: 'argument' : truncation from 'double' to 'GLclampf'
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(197): warning C4101: 'vNormal' : unreferenced local variable
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(197): warning C4101: 'vPosition' : unreferenced local variable
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(423): warning C4305: '=' : truncation from 'double' to 'float'
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(495): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\empresswrath\documents\minigolf\minigolf\main.cpp(496): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-         GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\OpenGL\glew-1.10.0\include" /IC:\OpenGL\glm /IC:\OpenGL\freeglut\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Map.cpp
+         Map.cpp
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(44): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(55): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(65): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(75): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(77): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(79): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(80): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(81): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(90): warning C4056: overflow in floating-point constant arithmetic
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(90): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(92): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(94): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(95): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(96): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(127): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(137): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.hpp(211): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(87): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(146): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(262): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(356): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(369): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(371): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(391): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(407): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(412): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\thomas\documents\github\epihalvedminigolf\minigolf\map.cpp(404): warning C4101: 'k' : unreferenced local variable
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\OpenGL\glew-1.10.0\lib\Release\Win32" /LIBPATH:C:\OpenGL\freeglut\lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.lib" /MACHINE:X86 Debug\HUD.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Thomas\Documents\GitHub\EpiHalvedMinigolf\Debug\Minigolf.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\OpenGL\glew-1.10.0\lib\Release\Win32" /LIBPATH:C:\OpenGL\freeglut\lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Thomas\Documents\GitHub\EpiHalvedMinigolf\Debug\Minigolf.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Thomas\Documents\GitHub\EpiHalvedMinigolf\Debug\Minigolf.lib" /MACHINE:X86 Debug\HUD.obj
          Debug\InitShader.obj
          Debug\LoadShader.obj
          Debug\main.obj
          Debug\Map.obj
          Debug\MapReader.obj
          Debug\Physics.obj
-         LINK : C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.exe not found or not built by the last incremental link; performing full link
-         Minigolf.vcxproj -> C:\Users\Empresswrath\Documents\Minigolf\Debug\Minigolf.exe
-     1>Done Building Project "C:\Users\Empresswrath\Documents\Minigolf\Minigolf\Minigolf.vcxproj" (Build target(s)).
+         Minigolf.vcxproj -> C:\Users\Thomas\Documents\GitHub\EpiHalvedMinigolf\Debug\Minigolf.exe
+     1>Done Building Project "C:\Users\Thomas\Documents\GitHub\EpiHalvedMinigolf\Minigolf\Minigolf.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.15
+Time Elapsed 00:00:02.73

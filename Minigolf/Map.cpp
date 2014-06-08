@@ -1,5 +1,12 @@
 #include "Map.hpp"
 
+//This is here since we don't have the hole class yet and is for testing the new method of input
+string coursename = "";
+string holename = "";
+int numholes = 0;
+int parvalue = 0;
+bool beginholeinput = false;
+
 vector<Tile> Tiles;			//Our tiles
 MapObject TileBuffer;		//Tile buffer object
 ImportObj Tee;				//The tee
@@ -131,22 +138,98 @@ void ReadVertices(fstream& file)
 	}
 }
 
+//Gets the name of a course or hole and returns it
+string ParseName(vector<string> lines)
+{
+	bool begin = false;
+	string name = "";
+	for (int i = 0; i < lines.size(); i++)
+	{
+		if (begin == false)
+		{
+			//Beginning of string
+			if (lines[i][0] == 34)
+			{
+				begin = true;
+				name.append(lines[i].substr(1, lines[i].npos));
+			}
+		}
+		else
+		{
+			name.append(" ");
+			//End of string
+			if (lines[i][lines[i].size() - 1] == 34)
+			{
+				name.append(lines[i].substr(0, lines[i].size() - 1));
+				begin = false;
+				return name;
+			}
+			else
+			{
+				name.append(lines[i]);
+			}
+		}
+	}
+
+	return name;
+}
 
 //Parse the line and store the vertices
+/*The new format goes like so:
+course "A Single Hole Course" 1
+begin_hole
+
+end_hole
+
+Anything else, like the tile, cup, name, par, etc. definitions go in between begin_hole and end_hole in any order
+*/
 void ParseLine(vector<string> lines)
 {
-	//Check for a tile
-	if (lines[0] == "tile")
+	//If no holes were defined, check for a course definition and name
+	if (numholes == 0)
 	{
-		ParseTile(lines);
+		if (lines[0] == "course")
+		{
+			coursename = ParseName(lines);
+			numholes = stoi(lines[lines.size() - 1]);
+		}
 	}
-	else if (lines[0] == "tee")
+	//Check for hole input
+	else if (beginholeinput == false)
 	{
-		ParseTeeCup(lines, Tee);
+		if (lines[0] == "begin_hole")
+			beginholeinput = true;
 	}
-	else if (lines[0] == "cup")
+	else if (beginholeinput == true)
 	{
-		ParseTeeCup(lines, Cup);
+		//Check for the end of hole input and the start of a new hole
+		if (lines[0] == "end_hole")
+		{
+			beginholeinput = false;
+		}
+		//Check for the name of the hole
+		else if (lines[0] == "name")
+		{
+			holename = ParseName(lines);
+		}
+		//Check for the par value
+		else if (lines[0] == "par")
+		{
+			parvalue = stoi(lines[1]);
+		}
+		//Check for a tile
+		else if (lines[0] == "tile")
+		{
+			ParseTile(lines);
+		}
+		else if (lines[0] == "tee")
+		{
+			ParseTeeCup(lines, Tee);
+		}
+		else if (lines[0] == "cup")
+		{
+			ParseTeeCup(lines, Cup);
+		}
 	}
 }
 
