@@ -247,16 +247,16 @@ void display()
 	//Draw
 	RenderMap();
 	DisplayMap(3, GolfBall.Model.Indices.size());
-	drawGUIText("Score: ", 0, 580);
-	drawGUIText("Par: ", 0, 560);
-	drawGUIText("Shots: ", 0, 540);
-	drawGUIText("Power", 0, 500);
+	drawGUIText("Score: ", 0, 580, glm::vec3(0.0, 0.0, 0.0));
+	drawGUIText("Par: ", 0, 560, glm::vec3(0.0, 0.0, 0.0));
+	drawGUIText("Shots: ", 0, 540, glm::vec3(0.0, 0.0, 0.0));
+	drawGUIText("Power", 0, 500, glm::vec3(0.0, 0.0, 0.0));
 	//Send it to the screen
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
 
-void drawGUIText(char* s, int x, int y)
+void drawGUIText(char* s, int x, int y, glm::vec3 Color)
 {
 	glDisable(GL_TEXTURE_2D);
 	glMatrixMode(GL_PROJECTION);
@@ -268,7 +268,7 @@ void drawGUIText(char* s, int x, int y)
 	glLoadIdentity();
 	glRasterPos2i(x, y);
 	void * font = GLUT_BITMAP_HELVETICA_18;
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(Color.r, Color.g, Color.b);
 	glutBitmapString(font, (const unsigned char *) s);
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

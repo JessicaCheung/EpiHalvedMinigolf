@@ -99,7 +99,6 @@
     <ClInclude Include="MapReader.hpp" />
     <ClInclude Include="Physics.hpp" />
     <ClInclude Include="PhysicsObject.hpp" />
-    <ClInclude Include="Ray.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fshader5.glsl" />

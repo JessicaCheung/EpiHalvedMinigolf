@@ -197,7 +197,6 @@ void ParseTile(vector<string> lines)
 		}
 	}
 	newTile.CalculateNormal();
-	newTile.CalculateLocation();
 	//Add the tile to our list
 	Tiles.push_back(newTile);
 }

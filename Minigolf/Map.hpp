@@ -69,41 +69,12 @@ public:
 		}
 	}
 
-	glm::vec3 GetMinPoints(vector<glm::vec3> vertices)
-	{
-		int x, y, z;
-		x = y = z = INFINITY;
-
-		for (int i = 0; i < vertices.size(); i++)
-		{
-			if (vertices[i].x < x) x = vertices[i].x;
-			if (vertices[i].y < y) y = vertices[i].y;
-			if (vertices[i].z < z) z = vertices[i].z;
-		}
-
-		return glm::vec3(x, y, z);
-	}
-
-	glm::vec3 GetMaxPoints(vector<glm::vec3> vertices)
-	{
-		int x, y, z;
-		x = y = z = -INFINITY;
-
-		for (int i = 0; i < vertices.size(); i++)
-		{
-			if (vertices[i].x > x) x = vertices[i].x;
-			if (vertices[i].y > y) y = vertices[i].y;
-			if (vertices[i].z > z) z = vertices[i].z;
-		}
-
-		return glm::vec3(x, y, z);
-	}
 };
 
 class ImportObj : public MapObject
 {
 public:
-	glm::vec3 Coordinate;		//Position of Tee
+	glm::vec3 Coordinate;		//Position of object
 
 	//Constructors
 	ImportObj()
@@ -221,23 +192,7 @@ public:
 		cout << "Normal: " << endl;
 		cout << Normal.x << ", " << Normal.y << ", " << Normal.z << endl;
 	}
-
-	//Gets the Tile's position, or its center point
-	void CalculateLocation()
-	{
-		//Get min points and max points
-		glm::vec3 minpoints = /*Physics::*/GetMinPoints(Vertices);
-		glm::vec3 maxpoints = /*Physics::*/GetMaxPoints(Vertices);
-
-		//Find difference and divide by 2
-		glm::vec3 difference = (maxpoints - minpoints) / 2.0f;
-
-		//Final location; the center of the tile
-		Location = (maxpoints - difference);
-	}
 };
-
-//extern ImportObj Tee;
 
 void ReadMap(string fileName);
 void RenderMap();

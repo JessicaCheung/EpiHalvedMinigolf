@@ -25,7 +25,7 @@ void BindShader(GLuint vao, GLuint program, vector<glm::vec3> Vertices, vector<g
 void setShaders();
 void Update();
 void display();
-void drawGUIText(char* s, int x, int y);
+void drawGUIText(char* s, int x, int y, glm::vec3 Color);
 void handleKeyboard(unsigned char key, int x, int y);
 void handleResize(int w, int h);
 void handle_menu(int ID);

@@ -50,9 +50,6 @@
     <ClInclude Include="PhysicsObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ray.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hole.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
