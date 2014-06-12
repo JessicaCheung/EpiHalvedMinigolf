@@ -1,87 +1,48 @@
-/*#pragma once
-#include "main.hpp"
+//#pragma once
+#ifndef HOLE_H
+#define HOLE_H
 #include "Map.hpp"
-#include "MapReader.hpp"
-#include "PhysicsObject.hpp"
 
 //A hole, or level in our minigolf stage
 class Hole
 {
 public:
-	//The tiles in the map
-	vector<Tile> Tiles;
-
-	//The walls in the hole
-	ImportObj Walls;
-
-	//The tee for this hole
-	ImportObj Tee;
-
-	//The cup for this hole
-	ImportObj Cup;
-
-	//The golf ball
-	Ball Golfball;
+	vector<Tile> Tiles;		//The tiles in the map
+	MapObject TileBuffer;	//Buffer 
+	ImportObj Walls;		//The walls in the hole
+	ImportObj Tee;			//The tee for this hole
+	ImportObj Cup;			//The cup for this hole
+	int Par;
+	string HoleName;
 
 	//Constructor
-	Hole(string filename)
+	Hole()
 	{
-		LoadHole(filename);
-		
-		//Load the ball on the Tee
-		LoadGolfBall();
 	}
 
-	//Places the Golf Ball on the Tee
-	void LoadGolfBall()
+	Hole(vector<Tile> tiles, MapObject tilebuffer, ImportObj walls, ImportObj tee, ImportObj cup, int par, string name)
 	{
-		ImportObj temp;
-		load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(0, 0.08, 0));
-		temp.CalculateNormals();
-
-		Golfball = Ball(temp, Tee.Coordinate, Tiles[Tee.TileID - 1]);
+		Tiles = tiles;
+		TileBuffer = tilebuffer;
+		Walls = walls;
+		Tee = tee;
+		Cup = cup;
+		Par = par;
+		HoleName = name;
 	}
 
-	void LoadHole(string filename)
-	{
-		ReadFile(filename, Tiles, Tee, Cup);
-	}
+	void SetTiles(vector<Tile> tiles) { Tiles = tiles; }
+	void SetTileBuffer(MapObject buffer) { TileBuffer = buffer; }
+	void SetWalls(ImportObj walls) { Walls = walls; }
+	void SetTee(ImportObj tee) { Tee = tee; }
+	void SetCup(ImportObj cup) { Cup = cup; }
+	void SetPar(int par) { Par = par; }
+	void SetName(string name) { HoleName = name; }
 
-	//Updates the hole
-	void Update()
-	{
-		GolfBall.Move();
-	}
+};
 
-	//Initializes rendering of the hole (binds buffers, etc.)
-	void InitHoleRender()
-	{
+void LoadHole(vector<Tile> tiles, MapObject tilebuffer, ImportObj walls, ImportObj tee, ImportObj cup, int par, string name);
 
-	}
+vector<Hole> getHoles();
 
-	//Renders the hole
-	void RenderHole()
-	{
-		RenderTiles();
-		RenderTee();
-		RenderCup();
-	}
-
-	//Renders all the tiles
-	void RenderTiles()
-	{
-
-	}
-
-	//Renders the Tee
-	void RenderTee()
-	{
-
-	}
-
-	//Renders the Cup
-	void RenderCup()
-	{
-
-	}
-};*/
+#endif

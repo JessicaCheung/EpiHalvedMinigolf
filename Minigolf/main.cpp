@@ -1,6 +1,6 @@
-#include "Map.hpp"
-#include "Physics.hpp"
+//#include "Map.hpp"
 //#include "Hole.hpp"
+#include "Physics.hpp"
 
 typedef enum {
 	TRANSLATE,
@@ -28,6 +28,8 @@ camera cameraView = FREELOOK;
 float BallDirAngle = 180.0f;
 float GolfPower = 0.1f;
 float const powerIncrements = 0.025f;
+int numShots = 0;
+
 
 GLuint vao[6];
 GLuint ModelView, Projection;
@@ -50,11 +52,12 @@ float physicsLagTime = 0.0f;
 
 //The golf ball (NOTE: This should be moved into Map later)
 Ball GolfBall;
+vector<Hole> HolesList;
 
 //The holes, or levels the player plays through
 //vector<Hole> Holes;
 int currentHole = 0;
-
+string parstr, numshots;
 //The main update function
 void Update()
 {
@@ -71,10 +74,10 @@ void Update()
 	{
 		//Perform a physics simulation
 		MovePhysicsObject(GolfBall);
-		WallCollision(GolfBall);
+		WallCollision(GolfBall, HolesList[currentHole].Walls);
 
-		int temp = FindCurrentTile(GolfBall, GolfBall.ObjectTile.TileID, getTiles());
-		GolfBall.ObjectTile = getTiles()[temp - 1];
+		int temp = FindCurrentTile(GolfBall, GolfBall.ObjectTile.TileID, HolesList[currentHole].Tiles);
+		GolfBall.ObjectTile = HolesList[currentHole].Tiles[temp - 1];
 
 		physicsLagTime -= fixedupdatetime;
 	}
@@ -119,20 +122,13 @@ int main(int argc, char** argv)
 
 void initRendering(char** argv)
 {
-	glClearColor(0.678431, 0.847059, 0.901961, 1.0);
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
-	ReadMap("hole.01.db");
-	
-	ImportObj temp;
-	ImportObj Tee = getTeeBuffer();
-	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(0, 0.08, 0));
-	temp.CalculateNormals();
-	GolfBall = Ball(temp, Tee.Coordinate, getTiles()[getTeeBuffer().TileID - 1]);
-	//The starting tile is the tile of the Tee
+	ReadMap("course.db");
 
-	setShaders();
+	HolesList = getHoles();
+	InitBall();
 }
 
 void setLighting(GLuint program)
@@ -185,10 +181,6 @@ void BindShader(GLuint vao, GLuint program, vector<glm::vec3> Vertices, vector<g
 
 void setShaders()
 {
-	MapObject Tiles = getTileBuffer();
-	ImportObj Tee = getTeeBuffer();
-	ImportObj Cup = getCupBuffer();
-	ImportObj Walls = getWallsBuffer();
 	ImportObj Pointer = getPointer();
 	GLuint program = LoadShaders("vshader5.glsl", "fshader5.glsl");
 	shadertemp = program;
@@ -204,18 +196,19 @@ void setShaders()
 
 	glGenVertexArrays(6, vao);
 
-	BindShader(vao[0], program, Tiles.Vertices, Tiles.Normals, Tiles.Indices);
-	BindShader(vao[1], program, Tee.Vertices, Tee.Normals, Tee.Indices);
-	BindShader(vao[2], program, Cup.Vertices, Cup.Normals, Cup.Indices);
+	BindShader(vao[0], program, HolesList[currentHole].TileBuffer.Vertices, HolesList[currentHole].TileBuffer.Normals, HolesList[currentHole].TileBuffer.Indices);
+	BindShader(vao[1], program, HolesList[currentHole].Tee.Vertices, HolesList[currentHole].Tee.Normals, HolesList[currentHole].Tee.Indices);
+	BindShader(vao[2], program, HolesList[currentHole].Cup.Vertices, HolesList[currentHole].Cup.Normals, HolesList[currentHole].Cup.Indices);
 	BindShader(vao[3], program, GolfBall.Model.Vertices, GolfBall.Model.Normals, GolfBall.Model.Indices);
-	BindShader(vao[4], program, Walls.Vertices, Walls.Normals, Walls.Indices);
+	BindShader(vao[4], program, HolesList[currentHole].Walls.Vertices, HolesList[currentHole].Walls.Normals, HolesList[currentHole].Walls.Indices);
 	BindShader(vao[5], program, Pointer.Vertices, Pointer.Normals, Pointer.Indices);
 }
 
 void display()
 {
-	char *string = "meep";
+	setShaders();
 	//Clear screen
+	glClearColor(0.678431, 0.847059, 0.901961, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::vec3 eye(0.0f, 5.0f, 5.0f);
 	glm::vec3 at(0.0f, 0.0f, 0.0f);
@@ -247,11 +240,15 @@ void display()
 	//Draw
 	RenderMap();
 	DisplayMap(3, GolfBall.Model.Indices.size());
-	drawGUIText("Score: ", 0, 580);
+	drawGUIText("Hole Name: ", 0, 580);
+	drawGUIText(&HolesList[currentHole].HoleName[0], 100, 580);
 	drawGUIText("Par: ", 0, 560);
+	drawGUIText(&parstr[0], 40, 560);
 	drawGUIText("Shots: ", 0, 540);
-	drawGUIText("Power", 0, 500);
+	numshots = to_string(numShots);
+	drawGUIText(&numshots[0], 60, 540);
 	//Send it to the screen
+	glFlush();
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
@@ -281,11 +278,24 @@ void handleKeyboard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
+	case 015:		//Return
+		cout << "Pressed" << endl;
+		if (currentHole >= HolesList.size() - 1)
+			currentHole = 0;
+		else
+		{
+			currentHole++;
+			numShots = 0;
+			InitBall();
+		//	GolfBall
+		}
+		break;
 	case 033:		//Escape
 		exit(EXIT_SUCCESS);
 		break;
 	case 040:		//Space
 		HitBall(GolfBall, BallDirAngle, GolfPower);
+		numShots++;
 		break;
 	case 'a':
 		if (BallDirAngle <= 0.0)
@@ -445,6 +455,18 @@ void glutMouseWheel(int wheel, int direction, int x, int y)
 	}
 }
 
+void InitBall()
+{
+	int TeeTileID = HolesList[currentHole].Tee.TileID;
+	ImportObj temp;
+	ImportObj Tee = getTeeBuffer();
+	load_obj("BallSmall.obj", temp.Vertices, temp.Indices, glm::vec3(0, 0.08, 0));
+	temp.CalculateNormals();
+	GolfBall = Ball(temp, HolesList[currentHole].Tee.Coordinate, HolesList[currentHole].Tiles[TeeTileID - 1]);
+	//_itoa(HolesList[currentHole].Par, parstr, 10);
+	parstr = to_string( HolesList[currentHole].Par);
+}
+
 GLuint* getVAO()
 {
 	return vao;
@@ -473,4 +495,9 @@ glm::mat4 getmodel_view()
 glm::vec2 getPointerBar()
 {
 	return glm::vec2(BallDirAngle, GolfPower);
+}
+
+int getCurrentHole()
+{
+	return currentHole;
 }

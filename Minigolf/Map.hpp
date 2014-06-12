@@ -1,4 +1,6 @@
 #pragma once
+#ifndef MAP_H
+#define MAP_H
 #include "main.hpp"
 
 class MapObject
@@ -161,11 +163,6 @@ public:
 		cout << endl;
 	}
 
-	//Renders the import object
-	void Render()
-	{
-
-	}
 };
 
 class Tile : public MapObject
@@ -237,8 +234,6 @@ public:
 	}
 };
 
-//extern ImportObj Tee;
-
 void ReadMap(string fileName);
 void RenderMap();
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
@@ -252,9 +247,13 @@ void load_obj(const char* filename, vector<glm::vec3> &vertices, vector<int> &el
 void BuildTiles(vector<Tile> tiles, vector<glm::vec3>& verts, vector<glm::vec3>& norms, vector<int>& inds);
 void BuildWalls(vector<Tile> tiles, vector<glm::vec3>& verts, vector<int>& inds);
 void DisplayMap(int num, int size);
+void AddHole();
 MapObject getTileBuffer();
 ImportObj getTeeBuffer();
 ImportObj getCupBuffer();
 ImportObj getWallsBuffer();
 ImportObj getPointer();
 vector<Tile> getTiles();
+int getPar();
+string getHoleName();
+#endif

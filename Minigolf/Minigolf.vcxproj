@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Hole.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="InitShader.cpp" />
     <ClCompile Include="LoadShader.cpp" />

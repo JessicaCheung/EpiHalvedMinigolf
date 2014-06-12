@@ -12,7 +12,7 @@ void MovePhysicsObject(PhysicsObject &obj)
 	obj.Model.Coordinate += glm::length(obj.Velocity) * obj.Direction;
 	obj.AddForce(glm::abs(obj.Velocity - obj.ObjectTile.Normal) * MU );
 	obj.VelocityZero();
-	cout << obj.Velocity.x << " " << obj.Velocity.y << " " << obj.Velocity.z << endl;
+	//cout << obj.Velocity.x << " " << obj.Velocity.y << " " << obj.Velocity.z << endl;
 }
 
 int FindCurrentTile(PhysicsObject &obj, int originTile, vector<Tile> tiles)
@@ -61,9 +61,9 @@ float FindYPos(PhysicsObject &obj)
 	return y;
 }
 
-bool WallCollision(PhysicsObject &obj)
+bool WallCollision(PhysicsObject &obj, ImportObj Walls)
 {
-	ImportObj Walls = getWallsBuffer();
+	//ImportObj Walls = getWallsBuffer();
 	glm::vec3 pos(0, 0, 0), temp(0, 0, 0), norm(0, 0, 0);
 
 	for (int i = 0; i < Walls.Indices.size(); i += 3)

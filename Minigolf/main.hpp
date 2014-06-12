@@ -1,3 +1,6 @@
+//#pragma once
+#ifndef MAIN_H
+#define MAIN_H
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -32,9 +35,12 @@ void handle_menu(int ID);
 void handle_motion(int x, int y);
 void handle_mouse(int b, int s, int x, int y);
 void glutMouseWheel(int wheel, int direction, int x, int y);
+void InitBall();
 GLuint* getVAO();
 GLuint getShader();
 glm::vec3 getNewCoor();
 GLuint getModelView();
 glm::mat4 getmodel_view();
 glm::vec2 getPointerBar();
+int getCurrentHole();
+#endif

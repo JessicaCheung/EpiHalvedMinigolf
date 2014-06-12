@@ -1,4 +1,7 @@
-#include "Map.hpp"
+//#pragma once
+#ifndef PHYSICSOBJECT_H
+#define PHYSICSOBJECT_H
+#include "Hole.hpp"
 
 //Gravity acceleration value
 static const float Gravity = .0001f;
@@ -74,3 +77,5 @@ public:
 		Origin = currentTile;
 	}
 };
+
+#endif

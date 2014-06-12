@@ -1,4 +1,5 @@
-#include "Map.hpp"
+//#include "Map.hpp"
+#include "Hole.hpp"
 
 //This is here since we don't have the hole class yet and is for testing the new method of input
 string coursename = "";
@@ -6,11 +7,12 @@ string holename = "";
 int numholes = 0;
 int parvalue = 0;
 bool beginholeinput = false;
+Hole tempHole;
 
+vector<Hole> MapHoles;			//List of holes
 vector<Tile> Tiles;			//Our tiles
 MapObject TileBuffer;		//Tile buffer object
 ImportObj Tee;				//The tee
-ImportObj Ball;				//The golfball
 ImportObj Cup;				//The cup
 ImportObj Walls;			//The walls
 ImportObj Pointer;			//Directional pointer
@@ -18,27 +20,27 @@ ImportObj Pointer;			//Directional pointer
 //Read/parse file and render the map (tiles, tee, and cup)
 void ReadMap(string fileName)
 {
-	ReadFile(fileName);
-	BuildTiles(Tiles, TileBuffer.Vertices, TileBuffer.Normals, TileBuffer.Indices);
-	load_obj("Tee.obj", Tee.Vertices, Tee.Indices, Tee.Coordinate);
-	load_obj("BallSmall.obj", Ball.Vertices, Ball.Indices, glm::vec3(0, 0, 0));
-	load_obj("Cup.obj", Cup.Vertices, Cup.Indices, Cup.Coordinate);
 	load_obj("Pointer.obj", Pointer.Vertices, Pointer.Indices, glm::vec3(0, 0, 0));
-	Tee.CalculateNormals();
-	Ball.CalculateNormals();
-	Cup.CalculateNormals();
 	Pointer.CalculateNormals();
-	BuildWalls(Tiles, Walls.Vertices, Walls.Indices);
-	Walls.CalculateNormals();
+
+	ReadFile(fileName);
+
 }
 
 void RenderMap()
 {
-	DisplayMap(0, TileBuffer.Indices.size());
+	MapHoles = getHoles();
+	int cur = getCurrentHole();
+	DisplayMap(0, MapHoles[cur].TileBuffer.Indices.size());
+	DisplayMap(1, MapHoles[cur].Tee.Indices.size());
+	DisplayMap(2, MapHoles[cur].Cup.Indices.size());
+	DisplayMap(4, MapHoles[cur].Walls.Indices.size());
+	DisplayMap(5, Pointer.Indices.size());
+	/*DisplayMap(0, TileBuffer.Indices.size());
 	DisplayMap(1, Tee.Indices.size());
 	DisplayMap(2, Cup.Indices.size());
 	DisplayMap(4, Walls.Indices.size());
-	DisplayMap(5, Pointer.Indices.size());
+	DisplayMap(5, Pointer.Indices.size());*/
 }
 
 
@@ -115,7 +117,6 @@ void ReadFile(string filename)
 	{
 		ReadVertices(file);
 	}
-
 	file.close();
 }
 
@@ -185,8 +186,12 @@ Anything else, like the tile, cup, name, par, etc. definitions go in between beg
 */
 void ParseLine(vector<string> lines)
 {
+	if (lines.size() == 0)
+	{
+		return;
+	}
 	//If no holes were defined, check for a course definition and name
-	if (numholes == 0)
+	else if (numholes == 0)
 	{
 		if (lines[0] == "course")
 		{
@@ -197,8 +202,11 @@ void ParseLine(vector<string> lines)
 	//Check for hole input
 	else if (beginholeinput == false)
 	{
-		if (lines[0] == "begin_hole")
+		if (lines[0] == "begin_hole") 
+		{
 			beginholeinput = true;
+		}
+
 	}
 	else if (beginholeinput == true)
 	{
@@ -206,6 +214,7 @@ void ParseLine(vector<string> lines)
 		if (lines[0] == "end_hole")
 		{
 			beginholeinput = false;
+			AddHole();
 		}
 		//Check for the name of the hole
 		else if (lines[0] == "name")
@@ -318,7 +327,8 @@ vector<string> SplitString(const char *str, char c)
 		while (*str != c && *str)
 			str++;
 		//We encountered the delimiter or a null character, so construct a new string based on the characters we had before this condition and add that to our vector
-		result.push_back(string(begin, str));
+		if (string(begin, str).size() > 0)
+			result.push_back(string(begin, str));
 		//Make sure the next character isn't a null character, which would end the string
 	} while (*str++ != 0);
 	return result;
@@ -482,6 +492,31 @@ void BuildWalls(vector<Tile> tiles, vector<glm::vec3>& verts, vector<int>& inds)
 	}
 }
 
+void AddHole()
+{
+	BuildTiles(Tiles, TileBuffer.Vertices, TileBuffer.Normals, TileBuffer.Indices);
+	load_obj("Tee.obj", Tee.Vertices, Tee.Indices, Tee.Coordinate);
+	load_obj("Cup.obj", Cup.Vertices, Cup.Indices, Cup.Coordinate);
+	Tee.CalculateNormals();
+	Cup.CalculateNormals();
+	BuildWalls(Tiles, Walls.Vertices, Walls.Indices);
+	Walls.CalculateNormals();
+	LoadHole(Tiles, TileBuffer, Walls, Tee, Cup, parvalue, holename);
+/*
+	tempHole.SetName(holename);
+	tempHole.SetPar(parvalue);
+	tempHole.SetTiles(Tiles);
+	tempHole.SetTileBuffer(TileBuffer);
+	tempHole.SetTee(Tee);
+	tempHole.SetCup(Cup);
+	Holes.push_back(tempHole);
+	tempHole =  Hole();*/
+	Tiles.clear();
+	Tee = ImportObj();
+	Cup = ImportObj();
+	Walls = ImportObj();
+}
+
 MapObject getTileBuffer()
 {
 	return TileBuffer;
@@ -506,7 +541,18 @@ ImportObj getPointer()
 {
 	return Pointer;
 }
+
 vector<Tile> getTiles()
 {
 	return Tiles;
+}
+
+int getPar()
+{
+	return parvalue;
+}
+
+string getHoleName()
+{
+	return holename;
 }
